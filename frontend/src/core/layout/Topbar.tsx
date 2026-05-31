@@ -1,33 +1,27 @@
-import { Database, GitBranch, RefreshCw } from 'lucide-react'
-import { Button } from '../ui/Button'
-import { Tag } from '../ui/Tag'
+import { Bell, Search } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { ModuleConfig } from '../modules/modulesRegistry';
 
-type TopbarProps = {
-  loading: boolean
-  source: 'api' | 'fallback'
-}
+export function Topbar({ modules }: { modules: ModuleConfig[] }) {
+  const location = useLocation();
+  const current = modules.find((module) => module.route === location.pathname) ?? modules[0];
 
-export function Topbar({ loading, source }: TopbarProps) {
   return (
     <header className="topbar">
       <div>
-        <h1>Mailbox handover operations</h1>
-        <p>Customer portal, internal orders, and deployment workflow.</p>
+        <div className="eyebrow">Independent ticket assistance workspace</div>
+        <h1>{current?.title ?? 'Operating Desk'}</h1>
       </div>
       <div className="topbar-actions">
-        <Tag tone={source === 'api' ? 'success' : 'warning'}>
-          {loading ? 'Loading registry' : source === 'api' ? 'Backend registry' : 'Local registry'}
-        </Tag>
-        <Button icon={Database} variant="secondary">
-          Modules
-        </Button>
-        <Button icon={GitBranch} variant="ghost">
-          GitHub
-        </Button>
-        <Button icon={RefreshCw} variant="ghost">
-          Sync
-        </Button>
+        <div className="global-search">
+          <Search size={16} />
+          <input placeholder="Search orders, mailboxes, notes…" />
+        </div>
+        <button className="icon-button" type="button" aria-label="Notifications">
+          <Bell size={18} />
+        </button>
+        <div className="avatar">EZ</div>
       </div>
     </header>
-  )
+  );
 }

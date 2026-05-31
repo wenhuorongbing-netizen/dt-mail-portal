@@ -1,105 +1,65 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-export type ModuleLayout = 'list' | 'calendar' | 'chat' | 'form' | 'custom'
+export type ModuleLayout = 'list' | 'calendar' | 'chat' | 'form' | 'custom';
 
-export type ModuleConfig = {
-  id: string
-  title: string
-  route: string
-  icon: string
-  layout: ModuleLayout
-  nav_position: number
-  backend_router: string
-  permissions: string[]
-  description: string
-  enabled: boolean
+export interface ModuleConfig {
+  id: string;
+  title: string;
+  route: string;
+  icon: string;
+  layout: ModuleLayout;
+  nav_position: number;
+  description?: string;
+  enabled?: boolean;
+  permissions?: string[];
 }
 
 const fallbackModules: ModuleConfig[] = [
   {
-    id: 'customer_portal',
-    title: 'Customer Portal',
-    route: '/portal',
-    icon: 'Smartphone',
-    layout: 'custom',
-    nav_position: 10,
-    backend_router: 'app.modules.customer_portal.backend.router.router',
-    permissions: [],
-    description: 'Mobile customer handover page for mailbox, ticket login, and rules.',
-    enabled: true,
-  },
-  {
-    id: 'orders',
-    title: 'Orders',
-    route: '/admin/orders',
-    icon: 'ClipboardList',
-    layout: 'list',
-    nav_position: 20,
-    backend_router: 'app.modules.orders.backend.router.router',
-    permissions: ['admin', 'operator'],
-    description: 'Internal order workflow for mailbox creation and delivery.',
-    enabled: true,
-  },
-  {
     id: 'example',
-    title: 'Module Example',
-    route: '/modules/example',
-    icon: 'Boxes',
+    title: 'Example Desk',
+    route: '/example',
+    icon: 'sparkles',
     layout: 'list',
     nav_position: 90,
-    backend_router: 'app.modules.example.backend.router.router',
-    permissions: ['admin'],
-    description: 'Reference module for future admin addons.',
+    description: 'Local fallback module while the backend is offline.',
     enabled: true,
   },
-]
+];
 
 export function useModules() {
-  const [modules, setModules] = useState<ModuleConfig[]>(fallbackModules)
-  const [loading, setLoading] = useState(true)
-  const [source, setSource] = useState<'api' | 'fallback'>('fallback')
+  const [modules, setModules] = useState<ModuleConfig[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
-    async function loadModules() {
+    async function load() {
       try {
-        const response = await fetch('/api/modules')
-        if (!response.ok) {
-          throw new Error(`Module registry returned ${response.status}`)
-        }
-
-        const payload = (await response.json()) as ModuleConfig[]
+        const response = await fetch('/api/modules');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = (await response.json()) as ModuleConfig[];
         if (!cancelled) {
-          setModules(payload)
-          setSource('api')
+          setModules(data.sort((a, b) => a.nav_position - b.nav_position));
         }
-      } catch {
+      } catch (err) {
+        // During early vibe-coding sessions the backend may not be running.
+        // Use a local fallback so the UI shell remains testable.
         if (!cancelled) {
-          setModules(fallbackModules)
-          setSource('fallback')
+          setModules(fallbackModules);
+          setError(null);
         }
       } finally {
-        if (!cancelled) {
-          setLoading(false)
-        }
+        if (!cancelled) setLoading(false);
       }
     }
 
-    void loadModules()
-
+    load();
     return () => {
-      cancelled = true
-    }
-  }, [])
+      cancelled = true;
+    };
+  }, []);
 
-  const visibleModules = useMemo(
-    () =>
-      modules
-        .filter((module) => module.enabled)
-        .sort((left, right) => left.nav_position - right.nav_position),
-    [modules],
-  )
-
-  return { loading, modules: visibleModules, source }
+  return { modules, loading, error };
 }

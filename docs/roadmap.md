@@ -1,36 +1,64 @@
 # Roadmap
 
-## MVP-1 Portal Prototype
+## Phase 0 — Startup package
 
-- Customer portal home.
-- TicketPlus+ login guide.
-- Rule and privacy pages.
-- Roundcube login entry.
+- Repository structure.
+- Architecture docs.
+- AGENTS.md.
+- Prompt library.
+- Backend/frontend skeleton.
 
-## MVP-2 Admin Workflow
+## Phase 1 — Customer portal prototype
+
+- Mobile landing page.
+- Login instructions page.
+- TicketPlus+ guide page.
+- Rules page.
+- Privacy and terms pages.
+
+## Phase 2 — Admin MVP
 
 - Order list.
 - New order form.
-- Mailbox generation workflow.
-- Customer handover text generation.
-- Order status flow.
+- Price calculation.
+- Mailbox identity generation.
+- Handover text generator.
+- Status workflow.
 
-## MVP-3 Webmail Integration
+## Phase 3 — Email integration staging
 
-- Mailcow API discovery.
-- Mailbox create/update/delete.
-- Roundcube login page customization.
+- mailcow deployment plan.
+- Roundcube config/theme.
+- mailcow API integration.
+- Test mailbox creation.
 
-## MVP-4 Real Server Test
+## Phase 4 — Real server test
 
-- Tencent Cloud deployment notes.
-- Domain, DNS, DKIM, SPF, DMARC checks.
-- PostgreSQL setup.
-- Reverse proxy and TLS.
+- Tencent Cloud CVM.
+- DNS records.
+- SPF/DKIM/DMARC/PTR.
+- SSL.
+- Test `@tickets.buffjo.top` with TicketPlus+.
+- Test two real accounts.
 
-## MVP-5 Launch Checklist
+## Phase 5 — Launch hardening
 
-- Privacy and scope copy.
-- Security review.
-- Backup and retention policy.
-- Manual end-to-end test checklist.
+- Auth.
+- Backups.
+- Audit logs.
+- Privacy/deletion workflows.
+- Customer SOP refinements.
+- Error handling.
+
+## Phase 6 — Addons
+
+Possible modules:
+
+- Orders
+- Mailboxes
+- Customer templates
+- Calendar/reminders
+- Support inbox
+- Knowledge base
+- Profit dashboard
+- Compliance/audit log

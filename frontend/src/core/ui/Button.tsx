@@ -1,16 +1,9 @@
-import type { ButtonHTMLAttributes } from 'react'
-import type { LucideIcon } from 'lucide-react'
+import { ButtonHTMLAttributes, ReactNode } from 'react';
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  icon?: LucideIcon
-  variant?: 'primary' | 'secondary' | 'ghost'
-}
-
-export function Button({ children, className = '', icon: Icon, variant = 'primary', ...props }: ButtonProps) {
+export function Button({ children, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { children: ReactNode }) {
   return (
-    <button className={`button ${variant} ${className}`.trim()} type="button" {...props}>
-      {Icon ? <Icon size={16} /> : null}
-      <span>{children}</span>
+    <button className={`button ${className}`} {...props}>
+      {children}
     </button>
-  )
+  );
 }

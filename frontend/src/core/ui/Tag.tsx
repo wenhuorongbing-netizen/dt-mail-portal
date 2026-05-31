@@ -1,10 +1,5 @@
-import type { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
-type TagProps = {
-  children: ReactNode
-  tone?: 'neutral' | 'success' | 'warning'
-}
-
-export function Tag({ children, tone = 'neutral' }: TagProps) {
-  return <span className={`tag ${tone}`}>{children}</span>
+export function Tag({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'success' | 'warning' | 'danger' }) {
+  return <span className={`tag tag-${tone}`}>{children}</span>;
 }

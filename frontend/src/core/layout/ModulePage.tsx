@@ -1,22 +1,29 @@
-import type { ModuleConfig } from '../modules/modulesRegistry'
-import { Card } from '../ui/Card'
-import { PageLayout } from './PageLayout'
+import { Suspense, useMemo } from 'react';
+import { ModuleConfig } from '../modules/modulesRegistry';
+import { lazyLoadModuleComponent } from '../modules/loadModuleComponent';
+import { PageLayout } from './PageLayout';
+import { CalendarLayout, ChatLayout, FormLayout, ListLayout } from './StandardLayouts';
 
-type ModulePageProps = {
-  module?: ModuleConfig
+function frameFor(layout: ModuleConfig['layout'], children: React.ReactNode, module: ModuleConfig) {
+  if (layout === 'calendar') return <CalendarLayout module={module}>{children}</CalendarLayout>;
+  if (layout === 'chat') return <ChatLayout module={module}>{children}</ChatLayout>;
+  if (layout === 'form') return <FormLayout module={module}>{children}</FormLayout>;
+  if (layout === 'custom') return <>{children}</>;
+  return <ListLayout module={module}>{children}</ListLayout>;
 }
 
-export function ModulePage({ module }: ModulePageProps) {
+export function ModulePage({ module }: { module: ModuleConfig }) {
+  const Component = useMemo(() => lazyLoadModuleComponent(module.id), [module.id]);
+
   return (
-    <PageLayout
-      subtitle={module?.description ?? 'Select a module from the workspace navigation.'}
-      title={module?.title ?? 'Module not found'}
-    >
-      <Card>
-        <div className="empty-state">
-          <p>Module route is registered, but no dedicated frontend page has been added yet.</p>
-        </div>
-      </Card>
+    <PageLayout>
+      {frameFor(
+        module.layout,
+        <Suspense fallback={<div className="empty-state">Loading module…</div>}>
+          <Component moduleId={module.id} />
+        </Suspense>,
+        module,
+      )}
     </PageLayout>
-  )
+  );
 }

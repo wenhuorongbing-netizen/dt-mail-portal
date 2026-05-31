@@ -1,44 +1,39 @@
-# Environment
+# env
 .env
 .env.*
 !.env.example
-*.zip
 
 # Python
 __pycache__/
 *.py[cod]
-.pytest_cache/
-.ruff_cache/
-.mypy_cache/
+*.egg-info/
 .venv/
 venv/
-backend/dev.db
-backend/dev.sqlite
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# DB / secrets
 *.sqlite
+*.db
+*.dump
+*.sql
+*.pem
+*.key
+*.crt
 
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.tsbuildinfo
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-.idea
+# OS / IDE
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.idea/
+.vscode/
+
+# local artifacts
+/tmp/
+/logs/
+/data/

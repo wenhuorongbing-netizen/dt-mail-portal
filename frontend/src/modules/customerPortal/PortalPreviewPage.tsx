@@ -12,10 +12,14 @@ const steps = [
 
 export function PortalPreviewPage() {
   return (
-    <PageLayout
-      subtitle="Mobile customer-facing entry point for mailbox access, TicketPlus+ login, and rules."
-      title="Customer Portal"
-    >
+    <PageLayout>
+      <div className="module-frame-header" style={{ marginBottom: '14px' }}>
+        <div>
+          <p className="eyebrow">Mobile View</p>
+          <h2 style={{ fontSize: '1.8rem', margin: 0 }}>Customer Portal</h2>
+          <p className="muted">Mobile customer-facing entry point for mailbox access, TicketPlus+ login, and rules.</p>
+        </div>
+      </div>
       <div className="portal-preview">
         <div className="phone-frame">
           <div className="phone-screen">

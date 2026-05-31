@@ -1,17 +1,14 @@
 from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, Field
 
 
 class ExampleItemCreate(BaseModel):
-    title: str
-    status: str = "draft"
+    name: str = Field(min_length=1, max_length=200)
 
 
 class ExampleItemRead(BaseModel):
     id: int
-    title: str
-    status: str
+    name: str
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
+    model_config = {"from_attributes": True}

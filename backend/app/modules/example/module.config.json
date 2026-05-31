@@ -1,12 +1,12 @@
 {
   "id": "example",
-  "title": "Module Example",
-  "route": "/modules/example",
-  "icon": "Boxes",
+  "title": "Example Desk",
+  "route": "/example",
+  "icon": "sparkles",
   "layout": "list",
   "nav_position": 90,
-  "backend_router": "app.modules.example.backend.router.router",
-  "permissions": ["admin"],
-  "description": "Reference module showing module metadata, router loading, schemas, and SQLAlchemy models.",
-  "enabled": true
+  "backend_router": "app.modules.example.backend.router:router",
+  "description": "A minimal addon module showing the platform contract.",
+  "enabled": true,
+  "permissions": []
 }
