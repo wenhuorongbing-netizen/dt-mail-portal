@@ -697,3 +697,736 @@ Tasks:
 [2]: https://supabase.com/docs/guides/api/api-keys "Understanding API keys | Supabase Docs"
 [3]: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages "Using custom workflows with GitHub Pages - GitHub Docs"
 [4]: https://www.ticket-plus.app/en/deutschlandticket-germany-ticket-e58/ "FAQ - Frequently Asked Questions - TicketPlus+"
+
+你现在这个仓库的 docs 不是“没用”，而是**经历了几次架构转向以后，旧文档、新文档、未来规划文档混在一起了**。最核心的问题不是文件太多，而是：**没有一个明确的 current source of truth**，导致 agent 很容易今天按 Supabase 写，明天又按 FastAPI/mailcow 写，或者 RPC、路由、状态流互相打架。
+
+你贴的开发记录里能看出来，项目已经从 FastAPI skeleton 逐步 pivot 到 GitHub Pages + Supabase：做过 HashRouter、静态模块、Supabase schema、admin auth、mailbox inventory、orders、handover page、Pages workflow 等步骤。 GitHub 上 README 也已经明确写了 Phase 1 是 **GitHub Pages + Supabase**，没有自定义后端。 所以整理 docs 的第一原则就是：**现在所有文档都要围绕 Phase 1，而不是围绕未来 FastAPI/mailcow。**
+
+---
+
+## 一句话判断
+
+现在 docs 应该分成四类：
+
+```text
+1. 现在必须用：Phase 1 开发、部署、UX、SOP 的真实依据
+2. 需要更新后继续用：内容有价值，但和当前代码/架构有冲突
+3. 未来才用：FastAPI、mailcow、模块系统、服务器部署
+4. 归档不用：启动包、旧 issue、旧数据模型草稿
+```
+
+你下一步不是继续加功能，而是先把 docs 整理成：
+
+```text
+docs/CURRENT.md          当前唯一真相
+docs/README.md           文档地图
+docs/product/            产品与用户流程
+docs/ux/                 客户体验和设计
+docs/supabase/           Supabase 设置、RLS、RPC、测试
+docs/ops/                人工购票 SOP、交付 SOP、上线清单
+docs/future/             FastAPI / mailcow / module system
+docs/archive/            旧草稿和过期规划
+```
+
+---
+
+## 这些 docs 分别是干什么的
+
+### 1. `README.md`
+
+**作用：仓库首页，不是详细开发说明。**
+
+README 当前已经说明了项目是 mobile-first mailbox portal + admin panel，并且 Phase 1 是 GitHub Pages + Supabase。 它还说明客户不注册、不登录，只通过 handover link/code 看一条交付记录。
+
+**现在用得上。**
+
+但 README 不应该塞太多细节。它只需要告诉人：
+
+```text
+这个项目是什么
+当前架构是什么
+怎么本地跑
+怎么部署 GitHub Pages
+哪些 docs 必读
+哪些东西 Phase 1 不做
+```
+
+**整理建议：保留，精简，作为入口页。**
+
+---
+
+### 2. `AGENTS.md`
+
+**作用：给 AI coding agent 的最高规则。**
+
+这个文件非常重要。它现在已经写清楚 Phase 1 是 GitHub Pages + Supabase，未来才是 FastAPI、mailcow API、Roundcube。 它也明确禁止自动化 TicketPlus+ 注册、验证码绕过、自动付款、冒充官方等。
+
+**现在用得上，而且必须保留。**
+
+但是它里面有些规则需要和当前实现统一，比如它说 customer handover lookup 调 `lookup_handover`，而现在代码实际调用的是 `get_handover_by_code`。AGENTS 这类文件一旦错，agent 会跟着错。
+
+**整理建议：保留在根目录，但更新为“只读 docs/CURRENT.md 作为当前真相”。**
+
+---
+
+### 3. `docs/product-brief.md`
+
+**作用：产品定义，回答“我们到底在做什么”。**
+
+这个文档很有用。它写清楚了项目使命：为 Deutschlandticket purchase-assistance workflow 做专用邮箱、OTP 登录协助和运营后台。 它还写了客户流程和 operator 流程：客户付款、operator 创建订单/邮箱、人工购票、生成 handover、客户用 webmail 收 OTP 登录 TicketPlus+。
+
+**现在用得上。**
+
+但它不应该包含太多技术细节，技术细节放 `architecture.md` 或 `supabase-mvp.md`。
+
+**整理建议：移动到 `docs/product/product-brief.md`，保留。**
+
+---
+
+### 4. `docs/architecture.md`
+
+**作用：技术架构说明。**
+
+当前 architecture 已经写成 Phase 1 静态前端 + Supabase：客户浏览器访问 GitHub Pages，调用 Supabase RPC；operator 用 Supabase Auth 登录，操作 orders/mailboxes/handover records。 它还把 FastAPI、mailcow API 放到了未来阶段。
+
+**现在用得上。**
+
+但它目前有几个需要修的地方：
+
+```text
+1. RPC 名字要统一。
+2. handover route 要统一。
+3. password 是否返回给客户要统一。
+4. status flow 要统一。
+```
+
+**整理建议：保留为 `docs/architecture.md`，但它必须和 `docs/CURRENT.md` 保持一致。**
+
+---
+
+### 5. `docs/supabase-mvp.md`
+
+**作用：Supabase 设置说明、表结构、RLS、RPC 的核心文档。**
+
+这个是 Phase 1 最关键的技术文档。它解释了 Supabase Postgres、Auth、RLS、RPC 各自用途。 它还说明要运行 `supabase/schema.sql` 和 `supabase/policies.sql`。
+
+**现在必须用。**
+
+但它也是目前最需要修的文档，因为它和代码/业务有冲突：
+
+```text
+它说 get_handover_by_code 不返回 mailbox password；
+但客户页面需要显示邮箱密码。
+```
+
+文档里明确写了 “Does NOT return the mailbox password”。 但你的业务流程和 handover 页面都需要把邮箱密码交给客户，否则客户没法登录 webmail 收 OTP。
+
+另外，你贴的本地记录显示曾经创建了 `supabase/schema.sql`、`supabase/policies.sql`、migration 等文件。 但 GitHub 上我之前审查时发现 `.gitignore` 里有 `*.sql`，会忽略 SQL 文件。 这会导致文档说“运行 schema.sql”，但仓库里可能没有 SQL 文件。
+
+**整理建议：保留，但移动到 `docs/supabase/setup.md`，并立即修正。**
+
+---
+
+### 6. `docs/roadmap.md`
+
+**作用：阶段规划。**
+
+这个文档有用，因为它把 Phase 1 到 Phase 6 列清楚了。现在 Phase 1 是 GitHub Pages + Supabase，Phase 3 才是 FastAPI + mailcow automation，Phase 4 才是真服务器部署。 
+
+**现在用得上，但需要更新状态。**
+
+它的问题是：里面有些状态流还是旧的，例如写了 `draft → pending_payment → paid → ticketed → handed_over → closed`。 但现在代码里已经用另一套状态：`requested / paid / mailbox_assigned / ticket_purchased / delivered / closed / exception`。
+
+**整理建议：保留，但改成“当前完成度 + 下一步”。不要再只是概念路线图。**
+
+---
+
+### 7. `docs/design-system.md`
+
+**作用：UI 设计方向。**
+
+这个文件很有价值。它定义了“professional transit operations desk”的视觉方向，并规定客户页面要看起来 professional、trustworthy、mobile-first。 它也定义了配色、字体、组件和客户文案风格。
+
+**现在用得上。**
+
+问题是它还比较抽象。下一步做 UX polish 时，它应该变成更具体的：
+
+```text
+按钮尺寸
+移动端首屏结构
+handover 页卡片规范
+中文/英文文案规范
+状态颜色
+复制按钮规范
+```
+
+**整理建议：移动到 `docs/ux/design-system.md`，继续保留。**
+
+---
+
+### 8. `docs/mobile-wechat-ux.md`
+
+**作用：微信/手机端体验规则。**
+
+这个文件非常适合你的项目，因为客户很可能在微信里打开页面。它要求假设客户在手机/微信浏览器里操作，按钮要大、说明要短、文本要可复制。 它还特别强调要区分：
+
+```text
+Mailbox login username: dt202606001
+TicketPlus+ login email: dt202606001@tickets.buffjo.top
+```
+
+这个是最容易搞错的地方。
+
+**现在非常用得上。**
+
+**整理建议：移动到 `docs/ux/mobile-wechat-ux.md`，并和 handover 页面改版绑定。**
+
+---
+
+### 9. `docs/ticketplus-sop.md`
+
+**作用：人工购票 SOP。**
+
+这个文件是运营手册，不是技术文档。它写了付款前客户必须确认什么、operator 如何人工购买、10号规则如何收款、handover message 要包含哪些内容。 
+
+它还明确说不要只发 QR 截图、不要承诺退款、不要承诺一定能删除付款方式、不要承诺官方合作。
+
+**现在非常用得上。**
+
+这是你后面真正减少纠纷的文档。
+
+**整理建议：移动到 `docs/ops/ticketplus-sop.md`，保留并扩展成检查单。**
+
+---
+
+### 10. `docs/security-privacy.md`
+
+**作用：安全、隐私、风控基本原则。**
+
+这个文件列了关键风险：客户数据泄漏、邮箱密码泄漏、admin 未授权访问、客户滥用邮箱、平台账号混淆、续费纠纷。 它也列了 MVP 最低控制：private repo、无 secrets、强 admin 密码、HTTPS、admin auth、邮箱额度、audit logs、客户条款和隐私页。
+
+**现在用得上。**
+
+但它还没有和 Supabase/RLS/handover code 具体绑定。
+
+**整理建议：移动到 `docs/ops/security-privacy.md`，补充：handover code 过期、viewed_at、密码展示、RLS 测试。**
+
+---
+
+### 11. `docs/vibe-coding-workflow.md`
+
+**作用：告诉你怎么让 AI agent 分阶段写代码。**
+
+这个文件很重要，因为这个项目本身就是靠 vibe coding 逐步搭起来的。它的核心规则是：不要让 AI “build everything”，而是一次一个 slice、一个 acceptance test、一个 boundary。
+
+**现在用得上。**
+
+但它要更新成当前真实顺序：
+
+```text
+1. docs 整理
+2. Supabase SQL 修复
+3. 路由/RPC/状态统一
+4. 客户 handover UX
+5. admin 响应式
+6. 真实 Supabase 测试
+7. GitHub Pages 发布
+```
+
+**整理建议：保留为 `docs/vibe-coding-workflow.md`，但改成当前 Phase 1 的 workflow。**
+
+---
+
+### 12. `docs/module-contract.md`
+
+**作用：未来 FastAPI 模块系统约定。**
+
+这个文件现在主要是未来用的。它还在说每个 module 要有 backend config、`backend_router`、`/api/modules`、FastAPI APIRouter。 它还说新增模块时要创建 `backend/app/modules/<module_id>/module.config.json`，重启 backend，并确认 `/api/modules` 包含该模块。
+
+这和当前 Phase 1 的 GitHub Pages + Supabase 不一致。现在前端已经是静态模块 registry，不应该让 agent 继续按 `/api/modules` 写。
+
+**现在暂时用不上。**
+
+但不要删除。以后 FastAPI/mailcow 自动化阶段会用。
+
+**整理建议：移动到 `docs/future/module-contract.md`，顶部加：`Future Phase 3 only — not used in Phase 1`。**
+
+---
+
+### 13. `docs/data-model.md`
+
+**作用：旧的数据模型草稿。**
+
+这个文件现在基本过时了。它写的是 `orders / mailboxes / ticket_tasks / audit_logs`，字段也偏 FastAPI/未来设计，比如 `passenger_name_encrypted`、`password_encrypted`、`ticket_tasks`。 但当前 Supabase 文档里实际是 `mailbox_accounts / orders / handover_codes / audit_events`。
+
+**现在不应该作为开发依据。**
+
+否则 agent 可能又去创建 `ticket_tasks` 或 `mailboxes`，和现有 `mailbox_accounts` 冲突。
+
+**整理建议：归档到 `docs/archive/data-model-draft-old.md`，或者把有用内容合并进 `docs/supabase/schema-reference.md` 后删除原文件。**
+
+---
+
+### 14. `docs/repo-setup.md`
+
+**作用：初始化 GitHub 仓库时用。**
+
+这个文件写的是怎么 `git init`、怎么创建 repo、branch strategy、labels、milestones。
+
+现在 repo 已经建好了，Phase 1 已经推进过了，所以它的主要价值已经过去。
+
+**现在基本用不上。**
+
+**整理建议：移动到 `docs/archive/repo-setup-old.md`。**
+
+---
+
+### 15. `docs/github-issues.md`
+
+**作用：最初 issue 计划。**
+
+这个文件列了 #1–#25 的初始 issues。 但 GitHub 当前真实 issue 仍然是 #1–#15，而且很多已经部分完成但还是 open。
+
+**现在不应该继续作为计划依据。**
+
+真实计划应该从 GitHub issue board 更新，不应该靠这个旧 markdown。
+
+**整理建议：移动到 `docs/archive/github-issues-old.md`，新建 `docs/ops/current-issues.md` 或直接用 GitHub Issues。**
+
+---
+
+## 哪些现在最有用
+
+现在真正要读的应该只有这些：
+
+```text
+README.md
+AGENTS.md
+docs/CURRENT.md            ← 需要新建
+docs/product/product-brief.md
+docs/architecture.md
+docs/supabase/setup.md
+docs/ux/design-system.md
+docs/ux/mobile-wechat-ux.md
+docs/ops/ticketplus-sop.md
+docs/ops/security-privacy.md
+docs/vibe-coding-workflow.md
+```
+
+其中 **`docs/CURRENT.md` 最重要**。它应该用一页写清楚：
+
+```text
+当前架构：GitHub Pages + Supabase
+当前路由：/#/h/:code 或 /#/handover/:code
+当前 RPC：get_handover_by_code
+当前状态流：requested → paid → mailbox_assigned → ticket_purchased → handover_created → delivered → closed
+当前 webmail URL：VITE_WEBMAIL_URL，不从邮箱域名推导
+当前 handover 是否返回密码：返回，因为客户需要登录邮箱
+当前不做：FastAPI、mailcow API、自动 TicketPlus+ 注册/支付
+```
+
+---
+
+## 哪些现在不要再让 agent 读
+
+为了避免 agent 混乱，这些先不要进入 context pack：
+
+```text
+docs/module-contract.md
+docs/data-model.md
+docs/repo-setup.md
+docs/github-issues.md
+```
+
+不是因为它们完全没用，而是因为它们会把 agent 带回旧路线。
+
+处理方式：
+
+```text
+module-contract.md → docs/future/module-contract.md
+data-model.md → docs/archive/data-model-draft-old.md
+repo-setup.md → docs/archive/repo-setup-old.md
+github-issues.md → docs/archive/github-issues-old.md
+```
+
+---
+
+## 我建议的整理后目录结构
+
+不要搞太复杂。建议这样：
+
+```text
+docs/
+  README.md
+  CURRENT.md
+
+  product/
+    product-brief.md
+    user-flows.md
+
+  ux/
+    design-system.md
+    mobile-wechat-ux.md
+    customer-copy.md
+
+  supabase/
+    setup.md
+    schema-reference.md
+    rls-test-checklist.md
+
+  ops/
+    ticketplus-sop.md
+    security-privacy.md
+    launch-checklist.md
+
+  future/
+    module-contract.md
+    fastapi-mailcow-plan.md
+
+  archive/
+    data-model-draft-old.md
+    repo-setup-old.md
+    github-issues-old.md
+```
+
+其中：
+
+```text
+docs/README.md
+```
+
+只做文档地图，告诉 agent 和人类：
+
+```text
+当前开发先读什么
+未来阶段读什么
+哪些已经归档，不要作为依据
+```
+
+---
+
+## 下一步应该怎么整理
+
+### 第一步：新建 `docs/CURRENT.md`
+
+这是最重要的一步。内容不要长，但必须明确。
+
+建议内容：
+
+```md
+# Current Source of Truth
+
+## Current phase
+
+Phase 1: GitHub Pages + Supabase.
+
+No FastAPI, no mailcow API, no automated TicketPlus+ registration/payment in Phase 1.
+
+## Routes
+
+Customer:
+- /#/               landing
+- /#/h/:code        customer handover page
+- /#/guide          TicketPlus+ guide
+- /#/rules          billing/rules
+
+Admin:
+- /#/admin/login
+- /#/admin/orders
+- /#/admin/mailboxes
+
+## Supabase
+
+Frontend uses:
+- VITE_SUPABASE_URL
+- VITE_SUPABASE_ANON_KEY
+
+Never use service_role in frontend.
+
+RPC:
+- get_handover_by_code(p_code text)
+
+## Handover behavior
+
+The RPC returns:
+- full email
+- local part
+- mailbox password
+- webmail URL or enough data to display configured webmail URL
+- instructions
+- order/ticket status
+
+The mailbox password is returned intentionally because the customer needs it to log in to webmail and receive TicketPlus+ OTP.
+
+## Status flow
+
+requested
+paid
+mailbox_assigned
+ticket_purchased
+handover_created
+delivered
+closed
+exception
+
+## Current priorities
+
+1. Track Supabase SQL files in GitHub.
+2. Unify route/RPC/status naming.
+3. Polish customer handover UX.
+4. Polish admin mobile/responsive workflow.
+5. Test real GitHub Pages + Supabase flow.
+```
+
+---
+
+### 第二步：新建 `docs/README.md`
+
+示例：
+
+```md
+# Docs Map
+
+## Read first
+
+- `CURRENT.md`
+- `../AGENTS.md`
+- `product/product-brief.md`
+- `architecture.md`
+- `supabase/setup.md`
+
+## UX references
+
+- `ux/design-system.md`
+- `ux/mobile-wechat-ux.md`
+
+## Operations
+
+- `ops/ticketplus-sop.md`
+- `ops/security-privacy.md`
+- `ops/launch-checklist.md`
+
+## Future only
+
+- `future/module-contract.md`
+- `future/fastapi-mailcow-plan.md`
+
+## Archived
+
+Files in `archive/` are historical drafts. Do not use them as implementation source of truth.
+```
+
+---
+
+### 第三步：移动文档，不要急着删除
+
+执行：
+
+```text
+docs/design-system.md        → docs/ux/design-system.md
+docs/mobile-wechat-ux.md     → docs/ux/mobile-wechat-ux.md
+docs/ticketplus-sop.md       → docs/ops/ticketplus-sop.md
+docs/security-privacy.md     → docs/ops/security-privacy.md
+docs/supabase-mvp.md         → docs/supabase/setup.md
+docs/module-contract.md      → docs/future/module-contract.md
+docs/data-model.md           → docs/archive/data-model-draft-old.md
+docs/repo-setup.md           → docs/archive/repo-setup-old.md
+docs/github-issues.md        → docs/archive/github-issues-old.md
+```
+
+然后更新 README 和 AGENTS 里的链接。
+
+---
+
+### 第四步：修掉所有命名冲突
+
+统一这些：
+
+#### 1. Handover 路由
+
+现在 README 示例是 `portal.buffjo.top/h/abc123`。
+代码路由是 `/handover/:code`。
+
+建议统一成：
+
+```text
+/#/h/:code
+```
+
+并保留兼容跳转：
+
+```text
+/#/handover/:code → /#/h/:code
+```
+
+#### 2. RPC 名字
+
+统一成：
+
+```text
+get_handover_by_code
+```
+
+不要再出现：
+
+```text
+lookup_handover
+```
+
+#### 3. 密码字段
+
+现在不要叫：
+
+```text
+password_enc
+```
+
+除非真的加密。否则叫：
+
+```text
+mailbox_password
+```
+
+或：
+
+```text
+password_for_handover
+```
+
+更诚实。
+
+#### 4. 状态流
+
+统一成：
+
+```text
+requested
+paid
+mailbox_assigned
+ticket_purchased
+handover_created
+delivered
+closed
+exception
+```
+
+#### 5. Webmail URL
+
+不要从邮箱 domain 推导。要用：
+
+```text
+VITE_WEBMAIL_URL=https://webmail.buffjo.top
+```
+
+---
+
+### 第五步：处理 SQL 文件问题
+
+这个是技术整理里最急的。因为文档说要运行 SQL，但 `.gitignore` 现在忽略了 `*.sql`。
+
+修改 `.gitignore`：
+
+```gitignore
+# DB / secrets
+*.sqlite
+*.db
+*.dump
+*.pem
+*.key
+*.crt
+
+# Keep versioned Supabase SQL files
+!supabase/**/*.sql
+!supabase/*.sql
+```
+
+然后确认 GitHub 上能看到：
+
+```text
+supabase/schema.sql
+supabase/policies.sql
+supabase/migrations/001_update_status_workflow.sql
+supabase/migrations/002_handover_rpc_include_password.sql
+```
+
+---
+
+## 给 agent 的整理 prompt
+
+你可以直接把这个丢给 Cursor/Codex：
+
+```text
+Read AGENTS.md, README.md, docs/architecture.md, docs/roadmap.md, docs/supabase-mvp.md, docs/design-system.md, docs/mobile-wechat-ux.md, docs/ticketplus-sop.md, docs/security-privacy.md, docs/module-contract.md, docs/data-model.md, docs/repo-setup.md, and docs/github-issues.md.
+
+We need to reorganize documentation so Phase 1 has one clear source of truth.
+
+Do not change application code except links in docs if needed.
+
+Tasks:
+
+1. Create docs/CURRENT.md.
+   It must define:
+   - current phase: GitHub Pages + Supabase
+   - customer routes
+   - admin routes
+   - canonical RPC name: get_handover_by_code
+   - whether mailbox password is returned to customer: yes, intentionally for webmail login
+   - canonical status flow
+   - current no-go boundaries: no FastAPI, no mailcow API, no automated TicketPlus+ registration/payment
+
+2. Create docs/README.md as a documentation map.
+
+3. Move docs:
+   - docs/design-system.md → docs/ux/design-system.md
+   - docs/mobile-wechat-ux.md → docs/ux/mobile-wechat-ux.md
+   - docs/ticketplus-sop.md → docs/ops/ticketplus-sop.md
+   - docs/security-privacy.md → docs/ops/security-privacy.md
+   - docs/supabase-mvp.md → docs/supabase/setup.md
+   - docs/module-contract.md → docs/future/module-contract.md
+   - docs/data-model.md → docs/archive/data-model-draft-old.md
+   - docs/repo-setup.md → docs/archive/repo-setup-old.md
+   - docs/github-issues.md → docs/archive/github-issues-old.md
+
+4. Update README.md and AGENTS.md links to the new docs locations.
+
+5. Update moved docs so they do not contradict CURRENT.md:
+   - no lookup_handover; use get_handover_by_code
+   - no /h/:code without hash unless explicitly saying GitHub Pages uses /#/h/:code
+   - no “password is not returned” if the customer handover page needs password
+   - no old status flow names
+
+6. Add a note at the top of docs/future/module-contract.md:
+   “Future Phase 3 only. Not used in Phase 1.”
+
+7. Add a note at the top of every archive file:
+   “Archived historical draft. Do not use as implementation source of truth.”
+
+Acceptance:
+- docs/README.md clearly tells agents what to read first.
+- docs/CURRENT.md is the single source of truth.
+- README and AGENTS link to the new docs paths.
+- No active docs mention lookup_handover.
+- No active docs contradict the current GitHub Pages + Supabase Phase 1 architecture.
+- Do not delete old docs; archive them.
+```
+
+---
+
+## 整理后的下一步开发顺序
+
+文档整理完后，不要马上加新模块。按这个顺序：
+
+```text
+1. 修 .gitignore，确保 Supabase SQL 文件进入 GitHub
+2. 统一 route：/#/h/:code
+3. 统一 RPC：get_handover_by_code
+4. 统一 password 字段和文档
+5. 统一 status flow
+6. 修 webmail URL：VITE_WEBMAIL_URL
+7. 做客户 handover 页面中文移动端升级
+8. 做 admin orders/mailboxes 响应式升级
+9. 在 Supabase 真实项目跑 schema/policies
+10. GitHub Pages 部署真实测试
+```
+
+你现在最需要的是**先建立文档秩序**。否则继续 vibe coding，agent 会被旧文档误导，反复生成互相冲突的代码。

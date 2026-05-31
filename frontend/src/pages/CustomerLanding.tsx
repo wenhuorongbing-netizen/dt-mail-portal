@@ -1,25 +1,66 @@
-import { Link } from 'react-router-dom';
-import { Mail, ShieldCheck, BookOpen, HelpCircle, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Mail, ShieldCheck, BookOpen, HelpCircle, ArrowRight, Search } from 'lucide-react';
+import { useState } from 'react';
 
 export default function CustomerLanding() {
+  const navigate = useNavigate();
+  const [code, setCode] = useState('');
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = code.trim();
+    if (trimmed) {
+      navigate(`/h/${trimmed}`);
+    }
+  }
+
   return (
-    <div style={{ maxWidth: '540px', margin: '0 auto', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '24px', minHeight: '100vh' }}>
+    <div className="customer-page">
       <header style={{ textAlign: 'center', paddingTop: '32px' }}>
         <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: 'linear-gradient(135deg, var(--accent), #ffd18d)', display: 'grid', placeItems: 'center', margin: '0 auto 16px', fontWeight: 800, fontSize: '1.4rem', color: 'var(--ink)' }}>
           DT
         </div>
-        <h1 style={{ fontSize: '1.6rem', margin: '0 0 8px', fontFamily: 'var(--font-display)' }}>D-Ticket Mail Portal</h1>
+        <h1 style={{ fontSize: '1.6rem', margin: '0 0 8px', fontFamily: 'var(--font-display)' }}>D-Ticket 交付中心</h1>
         <p style={{ margin: 0, color: 'rgba(16,25,47,0.62)', fontSize: '0.85rem', lineHeight: '1.5' }}>
-          Dedicated mailbox and ticket handover for Deutschlandticket purchase assistance.
+          Deutschlandticket 专用邮箱与账号交付服务
         </p>
       </header>
 
       <div style={{ background: 'rgba(31,155,209,0.06)', border: '1px solid rgba(31,155,209,0.12)', borderRadius: '16px', padding: '16px', fontSize: '0.82rem', lineHeight: '1.5', display: 'flex', gap: '10px' }}>
         <ShieldCheck size={18} style={{ flexShrink: 0, color: 'var(--accent-2)', marginTop: '2px' }} />
         <div>
-          <strong>Independent service notice:</strong> This project is not an official TicketPlus+, Deutsche Bahn, BVG, or Deutschlandticket service. It is a mailbox/account handover and operational workflow system for purchase assistance.
+          <strong>独立服务声明：</strong>本项目不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 的官方服务。我们仅提供邮箱托管与购票协助。
         </div>
       </div>
+
+      {/* Code input — primary action */}
+      <form onSubmit={handleSubmit} style={{ background: 'var(--card)', border: '1px solid rgba(16,25,47,0.08)', borderRadius: '18px', padding: '18px', boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Mail size={18} style={{ color: 'var(--accent)' }} />
+          <h3 style={{ margin: 0, fontSize: '0.95rem' }}>打开我的账号</h3>
+        </div>
+        <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(16,25,47,0.6)' }}>
+          输入交付码查看邮箱凭证和登录教程：
+        </p>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="输入交付码，如 a3b8k2m5"
+            className="input"
+            style={{ flex: 1, fontFamily: 'monospace', letterSpacing: '0.05em' }}
+          />
+          <button
+            type="submit"
+            disabled={!code.trim()}
+            className="button"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0 16px' }}
+          >
+            <Search size={16} /> 查看
+          </button>
+        </div>
+      </form>
 
       <nav style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <Link to="/guide" style={{ textDecoration: 'none' }}>
@@ -28,8 +69,8 @@ export default function CustomerLanding() {
               <BookOpen size={20} style={{ color: 'var(--accent)' }} />
             </div>
             <div style={{ flex: 1 }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>TicketPlus+ Login Guide</h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>Step-by-step instructions for activating your ticket.</p>
+              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>TicketPlus+ 登录教程</h3>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>激活车票的详细步骤和常见问题</p>
             </div>
             <ArrowRight size={18} style={{ color: 'rgba(16,25,47,0.3)' }} />
           </div>
@@ -41,26 +82,16 @@ export default function CustomerLanding() {
               <HelpCircle size={20} style={{ color: 'var(--warn)' }} />
             </div>
             <div style={{ flex: 1 }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>Rules & Billing</h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>10th-day rule, cancellation policy, and pricing.</p>
+              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>规则与费用说明</h3>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>10号规则、计费方式、退订政策</p>
             </div>
             <ArrowRight size={18} style={{ color: 'rgba(16,25,47,0.3)' }} />
           </div>
         </Link>
-
-        <div style={{ background: 'var(--card)', border: '1px solid rgba(16,25,47,0.08)', borderRadius: '18px', padding: '18px', display: 'flex', alignItems: 'center', gap: '14px', boxShadow: 'var(--shadow)' }}>
-          <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: 'rgba(31,155,209,0.12)', display: 'grid', placeItems: 'center' }}>
-            <Mail size={20} style={{ color: 'var(--accent-2)' }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>Handover Lookup</h3>
-            <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>Open your handover link to view mailbox credentials.</p>
-          </div>
-        </div>
       </nav>
 
       <footer style={{ textAlign: 'center', fontSize: '0.72rem', color: 'rgba(16,25,47,0.42)', marginTop: 'auto', paddingTop: '20px' }}>
-        <span>Independent ticket assistance service &middot; Not affiliated with any official transport provider</span>
+        <span>独立购票协助服务 · 与任何官方交通运营商无关联</span>
       </footer>
     </div>
   );

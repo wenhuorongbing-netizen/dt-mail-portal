@@ -5,15 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run
-# in-progress and latest queued. Do not cancel in-progress runs as we want to
-# allow these production deployments to complete.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -30,17 +26,22 @@ jobs:
 
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
+
+      - name: Typecheck frontend
+        working-directory: frontend
+        run: npm run typecheck
 
       - name: Build frontend
         working-directory: frontend
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_WEBMAIL_URL: ${{ vars.VITE_WEBMAIL_URL }}
         run: npm run build
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: frontend/dist
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, BookOpen, ExternalLink } from 'lucide-react';
+import { ArrowLeft, BookOpen, ExternalLink, AlertTriangle } from 'lucide-react';
+import { WEBMAIL_URL } from '../lib/supabase';
 
 export default function GuidePage() {
   return (
@@ -57,10 +58,23 @@ export default function GuidePage() {
         </ul>
       </div>
 
+      <div style={{ background: 'rgba(244,166,42,0.06)', border: '1px solid rgba(244,166,42,0.18)', borderRadius: '16px', padding: '14px', fontSize: '0.78rem', lineHeight: '1.6', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
+          <AlertTriangle size={16} style={{ flexShrink: 0, color: 'var(--warn)', marginTop: '1px' }} />
+          <strong>TicketPlus+ Known Issues</strong>
+        </div>
+        <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <li><strong>Ticket not visible immediately:</strong> Future-month tickets activate around the 1st of the month at ~03:00. If you log in and don&apos;t see your ticket, it may not be activated yet.</li>
+          <li><strong>Use the exact same login method:</strong> You must log in with the same email and method (Email Login) used when the ticket was purchased. Using a different method will show no ticket.</li>
+          <li><strong>One active ticket per email:</strong> Each email/account can only have one active Deutschlandticket at a time.</li>
+          <li><strong>Ticket is digital only:</strong> The Deutschlandticket is a mobile ticket shown in the TicketPlus+ app or Apple/Google Wallet. PDF or printed tickets are not accepted.</li>
+        </ul>
+      </div>
+
       <div style={{ background: 'rgba(31,155,209,0.06)', border: '1px solid rgba(31,155,209,0.12)', borderRadius: '16px', padding: '14px', fontSize: '0.78rem', lineHeight: '1.5', display: 'flex', gap: '8px' }}>
         <ExternalLink size={16} style={{ flexShrink: 0, color: 'var(--accent-2)', marginTop: '2px' }} />
         <div>
-          <strong>Webmail access:</strong> Visit <a href="https://webmail.buffjo.top" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-2)', textDecoration: 'underline' }}>webmail.buffjo.top</a> to check your mailbox for OTP codes.
+          <strong>Webmail access:</strong> Visit <a href={WEBMAIL_URL} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-2)', textDecoration: 'underline' }}>{WEBMAIL_URL.replace('https://', '')}</a> to check your mailbox for OTP codes.
         </div>
       </div>
 

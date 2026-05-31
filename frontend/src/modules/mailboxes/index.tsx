@@ -12,6 +12,7 @@ interface MailboxAccount {
   password_enc: string;
   domain: string;
   status: string;
+  notes: string;
   created_at: string;
 }
 
@@ -63,6 +64,7 @@ export default function MailboxInventoryPage() {
       password_enc: password.trim(),
       domain: domain.trim(),
       status: 'active',
+      notes: notes.trim(),
     });
 
     if (insertError) {
@@ -132,7 +134,7 @@ export default function MailboxInventoryPage() {
         </p>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 380px) 1fr', gap: '20px', alignItems: 'start' }}>
+      <div className="admin-grid-2col-wide">
         {/* Create form */}
         <Card>
           <div style={{ marginBottom: '16px' }}>

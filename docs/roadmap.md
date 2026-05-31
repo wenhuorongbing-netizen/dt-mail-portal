@@ -30,7 +30,7 @@
 - New order form (customer label, notes).
 - Manual mailbox import (operator types email address and password into Supabase — no mailcow API yet).
 - Handover record creation (generate handover code, write instructions).
-- Status workflow (draft → pending_payment → paid → ticketed → handed_over → closed).
+- Status workflow: `requested` → `paid` → `mailbox_assigned` → `ticket_purchased` → `handover_created` → `delivered` → `closed` (or `exception`).
 - Audit log for admin actions.
 
 ### Supabase setup

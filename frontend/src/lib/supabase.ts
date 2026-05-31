@@ -13,3 +13,7 @@ export const supabase = createClient(
   supabaseUrl ?? 'https://placeholder.supabase.co',
   supabaseAnonKey ?? 'placeholder',
 );
+
+/** Configured webmail URL — never derive from mailbox domain */
+export const WEBMAIL_URL =
+  import.meta.env.VITE_WEBMAIL_URL ?? 'https://webmail.buffjo.top';

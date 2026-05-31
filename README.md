@@ -123,12 +123,13 @@ Keep the system professional, efficient, and compliant.
 
 ## Key docs
 
+- [`docs/CURRENT.md`](docs/CURRENT.md) — **single source of truth** for Phase 1.
+- [`docs/README.md`](docs/README.md) — documentation map.
 - `AGENTS.md` — instructions for AI coding agents.
-- `docs/product-brief.md` — project purpose and product scope.
-- `docs/architecture.md` — technical architecture (Supabase-first).
-- `docs/roadmap.md` — implementation phases.
-- `docs/module-contract.md` — addon/module contract (for future phases).
-- `docs/design-system.md` — visual direction.
-- `docs/ticketplus-sop.md` — manual purchase workflow.
-- `docs/vibe-coding-workflow.md` — AI-assisted build workflow.
-- `prompts/` — prompt library for vibe coding.
+- [`docs/product/product-brief.md`](docs/product/product-brief.md) — project purpose and product scope.
+- [`docs/architecture.md`](docs/architecture.md) — technical architecture (Supabase-first).
+- [`docs/supabase/setup.md`](docs/supabase/setup.md) — Supabase setup, schema, RLS, RPC.
+- [`docs/roadmap.md`](docs/roadmap.md) — implementation phases.
+- [`docs/ux/design-system.md`](docs/ux/design-system.md) — visual direction.
+- [`docs/ops/ticketplus-sop.md`](docs/ops/ticketplus-sop.md) — manual purchase workflow.
+- [`docs/vibe-coding-workflow.md`](docs/vibe-coding-workflow.md) — AI-assisted build workflow.

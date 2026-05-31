@@ -2,6 +2,10 @@
 
 This file defines how AI agents should work inside this repository.
 
+> **Before implementing anything, read [`docs/CURRENT.md`](docs/CURRENT.md).**  
+> It is the single source of truth for routes, RPC names, status flow, and boundaries.  
+> If this file contradicts CURRENT.md, CURRENT.md wins.
+
 ## Product context
 
 We are building a professional, mobile-first mailbox portal and operations admin panel for Deutschlandticket purchase-assistance workflows.

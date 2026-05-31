@@ -3,7 +3,7 @@ import { Button } from '../../core/ui/Button';
 import { Card } from '../../core/ui/Card';
 import { Input } from '../../core/ui/Input';
 import { Tag } from '../../core/ui/Tag';
-import { supabase } from '../../lib/supabase';
+import { supabase, WEBMAIL_URL } from '../../lib/supabase';
 import {
   ClipboardList, Plus, Mail, Copy, Check, Wallet,
   ArrowRight, Info, RefreshCw, Link as LinkIcon
@@ -16,6 +16,7 @@ type OrderStatus =
   | 'paid'
   | 'mailbox_assigned'
   | 'ticket_purchased'
+  | 'handover_created'
   | 'delivered'
   | 'closed'
   | 'exception';
@@ -66,13 +67,14 @@ const STATUS_LABELS: Record<OrderStatus, { text: string; tone: 'neutral' | 'succ
   paid:               { text: 'Paid',               tone: 'warning' },
   mailbox_assigned:   { text: 'Mailbox Assigned',   tone: 'warning' },
   ticket_purchased:   { text: 'Ticket Purchased',   tone: 'success' },
+  handover_created:   { text: 'Handover Created',   tone: 'success' },
   delivered:          { text: 'Delivered',           tone: 'success' },
   closed:             { text: 'Closed',              tone: 'neutral' },
   exception:          { text: 'Exception',           tone: 'danger' },
 };
 
 const STATUS_FLOW: OrderStatus[] = [
-  'requested', 'paid', 'mailbox_assigned', 'ticket_purchased', 'delivered', 'closed',
+  'requested', 'paid', 'mailbox_assigned', 'ticket_purchased', 'handover_created', 'delivered', 'closed',
 ];
 
 function getTicketMonth(startDate: string): string {
@@ -104,7 +106,7 @@ function buildHandoverText(order: Order): string {
   const localPart = fullEmail.split('@')[0] ?? '';
   const domain = mailbox.domain;
   const password = mailbox.password_enc;
-  const webmailUrl = 'https://webmail.buffjo.top';
+  const webmailUrl = WEBMAIL_URL;
   const guideUrl = `${window.location.origin}/#/guide`;
   const rulesUrl = `${window.location.origin}/#/rules`;
 
@@ -351,7 +353,7 @@ export default function OrdersPage() {
         </p>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 400px) 1fr', gap: '20px', alignItems: 'start' }}>
+      <div className="admin-grid-2col">
         {/* Left Column: Create Order + Pricing */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           <Card>
@@ -629,6 +631,11 @@ export default function OrdersPage() {
                     </Button>
                   )}
                   {selectedOrder.status === 'ticket_purchased' && (
+                    <Button disabled={btnLoading} onClick={() => updateStatus(selectedOrder.id, 'handover_created')}>
+                      Mark Handover Created
+                    </Button>
+                  )}
+                  {selectedOrder.status === 'handover_created' && (
                     <Button disabled={btnLoading} onClick={() => updateStatus(selectedOrder.id, 'delivered')}>
                       Mark Delivered
                     </Button>
@@ -702,7 +709,7 @@ export default function OrdersPage() {
                 {selectedOrder.handover_codes && selectedOrder.handover_codes.length > 0 ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {selectedOrder.handover_codes.map((hc) => {
-                      const handoverUrl = `${window.location.origin}/#/handover/${hc.code}`;
+                      const handoverUrl = `${window.location.origin}/#/h/${hc.code}`;
                       return (
                         <Card key={hc.id} style={{ background: '#f0faf0', border: '1px solid rgba(13,138,97,0.15)', padding: '16px' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '8px' }}>

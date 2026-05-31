@@ -29,6 +29,7 @@ create table if not exists public.mailbox_accounts (
   domain          text        not null default 'tickets.buffjo.top',
   status          text        not null default 'active'
                                       check (status in ('active', 'disabled')),
+  notes           text        not null default '',  -- operator notes (not visible to customer)
   created_at      timestamptz not null default now(),
   updated_at      timestamptz not null default now()
 );
@@ -62,6 +63,7 @@ create table if not exists public.orders (
                                         'paid',
                                         'mailbox_assigned',
                                         'ticket_purchased',
+                                        'handover_created',
                                         'delivered',
                                         'closed',
                                         'exception'

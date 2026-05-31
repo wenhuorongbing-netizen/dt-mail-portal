@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Shell } from './core/layout/Shell';
 import { ModulePage } from './core/layout/ModulePage';
 import { useModules } from './core/modules/modulesRegistry';
@@ -8,6 +8,12 @@ import HandoverPage from './pages/HandoverPage';
 import GuidePage from './pages/GuidePage';
 import RulesPage from './pages/RulesPage';
 import AdminLogin from './pages/AdminLogin';
+
+/** Backward-compat redirect: /#/handover/:code → /#/h/:code */
+function HandoverRedirect() {
+  const { code } = useParams<{ code: string }>();
+  return <Navigate to={`/h/${code ?? ''}`} replace />;
+}
 
 function AdminGuard({ modules }: { modules: ReturnType<typeof useModules>['modules'] }) {
   const { session, loading } = useAuth();
@@ -41,7 +47,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<CustomerLanding />} />
-      <Route path="/handover/:code" element={<HandoverPage />} />
+      <Route path="/h/:code" element={<HandoverPage />} />
+      <Route path="/handover/:code" element={<HandoverRedirect />} />
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/rules" element={<RulesPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
