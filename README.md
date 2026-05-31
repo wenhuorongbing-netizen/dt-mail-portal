@@ -40,7 +40,7 @@ No custom backend. No server to rent.
 
 1. Create a Supabase project (free tier works for development).
 2. Set up schema: `orders`, `mailboxes`, `handover`, `audit_log`.
-3. Implement RLS policies and `lookup_handover` RPC function.
+3. Implement RLS policies and `get_handover_by_code` RPC function.
 4. Build React frontend with Supabase JS client.
 5. Deploy to GitHub Pages (GitHub Actions or `gh-pages` branch).
 6. Configure custom domain.

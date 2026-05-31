@@ -16,7 +16,7 @@
 
 - Mobile landing page with independent-service notice.
 - Handover page (`/h/:code`) — customer enters or opens handover link, sees mailbox credentials and TicketPlus+ login guide.
-- Handover lookup via Supabase RPC function (`lookup_handover`).
+- Handover lookup via Supabase RPC function (`get_handover_by_code`).
 - No customer registration or login. Access by handover code only.
 - Login instructions page.
 - TicketPlus+ guide page.
@@ -38,7 +38,7 @@
 - Create Supabase project.
 - Design and migrate schema (orders, mailboxes, handover, audit_log).
 - Implement RLS policies (operator CRUD on own orders, anon RPC-only handover lookup).
-- Implement `lookup_handover` RPC function.
+- Implement `get_handover_by_code` RPC function.
 - Frontend uses anon key only. `service_role` key stays out of the bundle.
 
 ### Deployment

@@ -8,7 +8,7 @@ Phase 1 uses a **static frontend on GitHub Pages** with **Supabase** as the back
 Customer mobile browser
   -> GitHub Pages (React/Vite static build)
      -> Supabase anon key (public, read-only RPC)
-     -> Supabase RPC: lookup_handover(handover_code)
+     -> Supabase RPC: get_handover_by_code(p_code)
         Returns one mailbox handover record if RLS policy allows
 
 Operator browser
@@ -29,7 +29,7 @@ Supabase project
 
 ### Customers do not register or log in
 
-Customers receive a **handover code** or **handover link** (e.g. `portal.buffjo.top/h/abc123`). The frontend calls a Supabase RPC function (`lookup_handover`) which:
+Customers receive a **handover code** or **handover link** (e.g. `portal.buffjo.top/h/abc123`). The frontend calls a Supabase RPC function (`get_handover_by_code`) which:
 
 1. Validates the code.
 2. Returns the single handover record (mailbox login, instructions, status).
@@ -121,7 +121,7 @@ CREATE POLICY "Operators manage handover" ON handover
 frontend/
   src/
     pages/
-      CustomerHandover.tsx    /h/:code route, calls lookup_handover RPC
+      CustomerHandover.tsx    /h/:code route, calls get_handover_by_code RPC
       CustomerLanding.tsx     / landing page with independent-service notice
       AdminLogin.tsx          /admin login via Supabase Auth
       AdminDashboard.tsx      /admin orders, mailboxes, handover management

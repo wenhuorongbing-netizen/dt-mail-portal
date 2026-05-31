@@ -97,7 +97,7 @@ Frontend must be:
 - Use the Supabase JS client (`@supabase/supabase-js`) for all database interactions.
 - Frontend initializes Supabase with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` environment variables only.
 - **Never use `service_role` key in the frontend.** It bypasses all RLS policies.
-- Customer handover lookup calls an RPC function (`lookup_handover`). Do not query the `handover` table directly from the frontend for anonymous users.
+- Customer handover lookup calls an RPC function (`get_handover_by_code`). Do not query the `handover_codes` table directly from the frontend for anonymous users.
 - Operator CRUD operations use the Supabase client with the user's auth session. RLS policies enforce access.
 - Use Supabase migrations or SQL scripts for schema changes. Track them in the repo.
 - Sensitive fields (mailbox passwords) must be encrypted before storing in Postgres.
@@ -166,7 +166,7 @@ Minimum checks before merging:
 - Frontend builds without TypeScript errors (`npm run build`).
 - Frontend renders without errors on mobile viewport (390px wide).
 - Supabase client initializes with anon key only.
-- Customer handover page calls `lookup_handover` RPC correctly.
+- Customer handover page calls `get_handover_by_code` RPC correctly.
 - RLS policies tested: anonymous user can only access handover by code.
 - RLS policies tested: operator can only access their own orders.
 - No `service_role` key in frontend bundle or environment.

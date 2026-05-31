@@ -28,7 +28,7 @@ Paste these files or mention them to the coding agent:
 Example:
 
 ```text
-Read AGENTS.md and docs/architecture.md. Implement the customer handover page only. The page calls a Supabase RPC function lookup_handover(handover_code) and displays the result. Use only the Supabase anon key — never the service_role key. Do not add customer login. At the end, list files changed and how to test.
+Read AGENTS.md and docs/architecture.md. Implement the customer handover page only. The page calls a Supabase RPC function get_handover_by_code(p_code) and displays the result. Use only the Supabase anon key — never the service_role key. Do not add customer login. At the end, list files changed and how to test.
 ```
 
 ### 3. Review pass
@@ -52,7 +52,7 @@ Before accepting:
 1. Supabase project setup (schema, RLS, RPC functions).
 2. `supabaseClient.ts` with anon key only.
 3. Customer landing page (static, independent-service notice).
-4. Customer handover page (`/h/:code`, calls `lookup_handover` RPC).
+4. Customer handover page (`/h/:code`, calls `get_handover_by_code` RPC).
 5. Admin login page (Supabase Auth).
 6. Admin order list (CRUD on `orders` table via Supabase client).
 7. Admin new order form.

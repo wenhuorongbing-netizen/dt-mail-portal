@@ -70,7 +70,7 @@ This sets up:
 - **RLS enabled** on all four tables.
 - **anon role**: no direct table access. Can only call `get_handover_by_code()` RPC.
 - **authenticated role** (operators): full CRUD, restricted to their own rows via `operator_id = auth.uid()`.
-- **`get_handover_by_code(code)`** RPC: SECURITY DEFINER function that returns one handover record by code. Password is NOT included in the response.
+- **`get_handover_by_code(p_code)`** RPC: SECURITY DEFINER function that returns one handover record by code. `mailbox_password` IS included in the response — the customer needs it to log in to webmail and retrieve OTP codes. This is safe because the RPC is the only anonymous access path and RLS ensures no other data is exposed.
 - **`generate_handover_code()`** helper: generates unique 8-char alphanumeric codes.
 
 ## How RLS works
@@ -90,8 +90,8 @@ const { data, error } = await supabase.rpc('get_handover_by_code', {
 The `get_handover_by_code()` function:
 1. Looks up the code in `handover_codes`.
 2. If found, joins the related `orders` and `mailbox_accounts` rows.
-3. Returns a JSON object with handover info, order status, and mailbox email.
-4. **Does NOT return the mailbox password.** Instructions are in the handover text.
+3. Returns a JSON object with handover info, order status, mailbox email, and mailbox password.
+4. The `mailbox_password` field is included intentionally — the customer needs it to log in to webmail and retrieve OTP codes. This is safe because the RPC is the only anonymous access path and RLS ensures no other data is exposed.
 5. Marks the handover as `viewed` on first access.
 6. If the code is invalid, returns `null`.
 
