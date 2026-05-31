@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+*.zip
 
 # Python
 __pycache__/
@@ -12,6 +13,8 @@ __pycache__/
 .venv/
 venv/
 backend/dev.db
+backend/dev.sqlite
+*.sqlite
 
 # Logs
 logs
@@ -25,6 +28,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+*.tsbuildinfo
 *.local
 
 # Editor directories and files

@@ -1,0 +1,20 @@
+services:
+  roundcube:
+    image: roundcube/roundcubemail:latest-apache
+    container_name: roundcube-mailcow
+    restart: unless-stopped
+    environment:
+      ROUNDCUBEMAIL_DEFAULT_HOST: dovecot
+      ROUNDCUBEMAIL_DEFAULT_PORT: 143
+      ROUNDCUBEMAIL_USERNAME_DOMAIN: tickets.buffjo.top
+      ROUNDCUBEMAIL_SKIN: elastic
+      ROUNDCUBEMAIL_DB_TYPE: sqlite
+      ROUNDCUBEMAIL_UPLOAD_MAX_FILESIZE: 2M
+      ROUNDCUBEMAIL_PLUGINS: archive,zipdownload
+    volumes:
+      - ./data/roundcube/db:/var/roundcube/db
+      - ./data/roundcube/config:/var/roundcube/config
+    networks:
+      mailcow-network:
+        aliases:
+          - roundcube

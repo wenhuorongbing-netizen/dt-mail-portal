@@ -1,0 +1,10 @@
+---
+description: D-Ticket Mail Portal project rules
+alwaysApply: true
+---
+
+Follow AGENTS.md. Keep the system modular. Do not implement third-party account automation, CAPTCHA bypass, OTP bypass, or automated payment. Customer-facing UI must include independent-service notice where relevant.
+
+Frontend modules go under `frontend/src/modules/<id>/index.tsx` and must use shared UI components.
+
+Backend modules go under `backend/app/modules/<id>/` and must include `module.config.json`.

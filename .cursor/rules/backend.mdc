@@ -1,0 +1,6 @@
+---
+description: Backend FastAPI module rules
+alwaysApply: false
+---
+
+Use FastAPI routers, Pydantic schemas, SQLAlchemy models, and dependency-injected DB sessions. Add business logic in modules, not in core. Expose module configs through `/api/modules`.

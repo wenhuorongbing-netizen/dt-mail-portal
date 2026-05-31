@@ -1,0 +1,8 @@
+# D-Ticket Mail Portal
+
+Primary AI instructions: AGENTS.md
+Architecture: docs/architecture.md
+Module contract: docs/module-contract.md
+Prompt library: prompts/
+
+Safety boundary: This project automates internal operations and mailbox creation only. It must not automate third-party account registration, CAPTCHA/OTP bypass, or payments.

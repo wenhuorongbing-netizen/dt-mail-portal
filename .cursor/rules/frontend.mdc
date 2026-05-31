@@ -1,0 +1,6 @@
+---
+description: Frontend style and architecture rules
+alwaysApply: false
+---
+
+Build mobile-first React + TypeScript UI. Use the professional transit operations desk aesthetic: navy, ivory, amber/blue accents, clear cards, strong hierarchy. Avoid generic SaaS slop and raw HTML when shared UI components exist.
