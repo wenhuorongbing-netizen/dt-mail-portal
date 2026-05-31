@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="DT Mail Portal">
+  <rect width="48" height="48" rx="10" fill="#12201f"/>
+  <path d="M12 17.5h24v17H12z" fill="#e0f2f1"/>
+  <path d="M12 17.5 24 27l12-9.5" fill="none" stroke="#0f766e" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M15 13h18" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+</svg>

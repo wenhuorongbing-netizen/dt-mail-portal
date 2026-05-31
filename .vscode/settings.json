@@ -1,0 +1,11 @@
+{
+  "eslint.workingDirectories": ["frontend"],
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/node_modules": true,
+    "**/dist": true
+  },
+  "terminal.integrated.cwd": "D:\\【指挥中心】\\节操都市\\项目\\dt-mail-portal"
+}

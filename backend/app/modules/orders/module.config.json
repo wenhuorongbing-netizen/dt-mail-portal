@@ -1,0 +1,12 @@
+{
+  "id": "orders",
+  "title": "Orders",
+  "route": "/admin/orders",
+  "icon": "ClipboardList",
+  "layout": "list",
+  "nav_position": 20,
+  "backend_router": "app.modules.orders.backend.router.router",
+  "permissions": ["admin", "operator"],
+  "description": "Internal order workflow for mailbox handover and D-Ticket account delivery.",
+  "enabled": true
+}

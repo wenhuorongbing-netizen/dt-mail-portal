@@ -1,0 +1,12 @@
+{
+  "id": "customer_portal",
+  "title": "Customer Portal",
+  "route": "/portal",
+  "icon": "Smartphone",
+  "layout": "custom",
+  "nav_position": 10,
+  "backend_router": "app.modules.customer_portal.backend.router.router",
+  "permissions": [],
+  "description": "Mobile customer-facing handover page for account access, tutorial, and rules.",
+  "enabled": true
+}
