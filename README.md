@@ -1,47 +1,86 @@
-# D-Ticket Mail Portal Startup Kit
+# D-Ticket Mail Portal
 
-A mobile-first mailbox portal + modular CRM/admin panel for a Deutschlandticket purchase-assistance workflow.
+A mobile-first mailbox portal + admin panel for a Deutschlandticket purchase-assistance workflow.
 
-This repository is designed for **vibe coding with guardrails**: one human owner, multiple AI-assisted implementation passes, clear architecture contracts, and a module system that allows new features to be added without rewriting the core shell.
+**MVP architecture: GitHub Pages + Supabase.** The frontend is a React/Vite static build deployed to GitHub Pages. Supabase provides Auth, Postgres, RLS, and RPC. No custom backend server in Phase 1.
 
 > Independent service notice: this project is not an official TicketPlus+, Deutsche Bahn, BVG, Deutschlandticket, Ticketmaster, or transport-company service. It is a mailbox/account handover and operational workflow system for purchase assistance.
 
-## What this starter includes
+## How it works
 
-- FastAPI backend skeleton with module loader.
-- React + TypeScript + Vite frontend skeleton.
-- Module config contract using `module.config.json`.
-- Example addon module.
-- Professional mobile-first UI direction.
+1. Operator creates an order and manually imports/types mailbox credentials into Supabase.
+2. Operator creates a handover record with instructions and a unique code.
+3. Customer receives a handover link (e.g. `portal.buffjo.top/h/abc123`).
+4. Customer opens the link — sees mailbox login and TicketPlus+ guide. No login required.
+5. Operator tracks order status through the admin panel.
+
+Customers do **not** register or log in. They access exactly one handover record via code.
+
+## What this repo includes
+
+- React + TypeScript + Vite frontend (static, deploys to GitHub Pages).
+- Supabase integration (Auth, Postgres, RLS, RPC).
 - `AGENTS.md` for AI coding agents.
-- Prompt library for generating modules, UI, backend APIs, deployment docs, and reviews.
-- Docs for architecture, roadmap, security, privacy, and TicketPlus+ manual SOP.
-- Initial GitHub issues / milestone plan.
+- Docs for architecture, roadmap, product brief, security, and workflow.
+- FastAPI backend skeleton (for future automation phases, not used in MVP).
+- Module config contract (for future phases).
 
 ## Target production domains
 
 ```text
-portal.buffjo.top       customer portal
-webmail.buffjo.top      customer mailbox login
-ops.buffjo.top          internal operations/admin panel
-mail.buffjo.top         mailcow admin/mail host
-tickets.buffjo.top      customer mailbox domain
+portal.buffjo.top       customer portal + admin panel (GitHub Pages)
+webmail.buffjo.top      customer mailbox login (future — Roundcube)
+mail.buffjo.top         mail host (future — mailcow)
+tickets.buffjo.top      customer mailbox domain (future)
 ```
 
-## Recommended first phase
+## Phase 1 — Static frontend + Supabase
 
-Do **not** rent production infrastructure yet. First build and test locally:
+No custom backend. No server to rent.
 
-1. Initialize a private GitHub repository.
-2. Push this starter kit.
-3. Run frontend and backend locally.
-4. Polish the customer portal and admin order workflow.
-5. Build the Roundcube theme/config package.
-6. Only then rent the Tencent Cloud CVM and deploy mailcow/Roundcube.
+1. Create a Supabase project (free tier works for development).
+2. Set up schema: `orders`, `mailboxes`, `handover`, `audit_log`.
+3. Implement RLS policies and `lookup_handover` RPC function.
+4. Build React frontend with Supabase JS client.
+5. Deploy to GitHub Pages (GitHub Actions or `gh-pages` branch).
+6. Configure custom domain.
 
-## Local development
+### Local development
 
-### Backend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Create a `.env.local` with your Supabase credentials:
+
+```text
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+```
+
+> **Never commit `.env.local` or expose the `service_role` key in the frontend.**
+
+### GitHub Pages deployment
+
+The repository includes a GitHub Actions workflow (`.github/workflows/pages.yml`) that builds the frontend and deploys to GitHub Pages on every push to `main`.
+
+**Setup steps:**
+
+1. **Enable GitHub Pages** — go to your repo → Settings → Pages → set **Source** to **GitHub Actions**.
+2. **Add repository variables** — go to Settings → Secrets and variables → Actions → Variables tab:
+   - `VITE_SUPABASE_URL` — your Supabase project URL (e.g. `https://your-project.supabase.co`)
+   - `VITE_SUPABASE_ANON_KEY` — your Supabase **anon** public key
+3. Push to `main` or trigger the workflow manually from the Actions tab.
+
+> The `anon` key is safe to expose in the frontend bundle — RLS policies control all access. **Never** add the `service_role` key as a variable or secret for this workflow.
+
+**Custom domain** — after the first deploy, go to Settings → Pages → Custom domain and enter your domain (e.g. `portal.buffjo.top`). Add a `CNAME` DNS record pointing to `<username>.github.io`.
+
+### Future backend (Phase 3+)
+
+The FastAPI skeleton remains in the repo for future automation:
 
 ```bash
 cd backend
@@ -51,73 +90,34 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Backend URLs:
+This is not used in Phase 1.
 
-```text
-http://localhost:8000/api/health
-http://localhost:8000/api/modules
-http://localhost:8000/api/example/items
-```
+## Security rules
 
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend URL:
-
-```text
-http://localhost:5173
-```
-
-## Module philosophy
-
-The core owns:
-
-- navigation
-- layout shell
-- shared UI components
-- module config loading
-- base routing
-- theme and design system
-
-Each module owns:
-
-- module config
-- its backend router/models/schemas
-- its frontend page content
-- its business logic
-
-A new module should work by adding a new folder under:
-
-```text
-backend/app/modules/<module_id>/
-frontend/src/modules/<module_id>/
-```
-
-and adding a `module.config.json` on the backend.
+- `service_role` key must NEVER enter the frontend bundle.
+- Frontend uses only the `anon` key.
+- Customer handover lookup uses Supabase RPC + RLS — customers can only see their own record.
+- Operators authenticate via Supabase Auth.
+- Sensitive fields (passwords, birthdates) are encrypted or minimized.
+- Never commit `.env`, API keys, passwords, or real customer data.
 
 ## Non-negotiable product boundaries
 
 This project may automate:
 
-- mailbox creation
-- password generation
-- internal order creation
-- customer handover text
-- manual purchase checklist generation
-- internal status tracking
+- Internal order workflow.
+- Handover code generation.
+- Status tracking.
+- Manual SOP checklist display.
+- Customer handover text delivery.
 
 This project should **not** automate:
 
-- third-party account registration at TicketPlus+ or similar platforms
-- CAPTCHA/OTP bypass
-- automated payment
-- platform rule evasion
-- impersonating official ticket providers
+- Third-party account registration at TicketPlus+ or similar platforms.
+- CAPTCHA/OTP bypass.
+- Automated payment.
+- Platform rule evasion.
+- Impersonating official ticket providers.
 
 Keep the system professional, efficient, and compliant.
 
@@ -125,9 +125,10 @@ Keep the system professional, efficient, and compliant.
 
 - `AGENTS.md` — instructions for AI coding agents.
 - `docs/product-brief.md` — project purpose and product scope.
-- `docs/architecture.md` — technical architecture.
-- `docs/module-contract.md` — addon/module contract.
+- `docs/architecture.md` — technical architecture (Supabase-first).
+- `docs/roadmap.md` — implementation phases.
+- `docs/module-contract.md` — addon/module contract (for future phases).
 - `docs/design-system.md` — visual direction.
 - `docs/ticketplus-sop.md` — manual purchase workflow.
-- `docs/roadmap.md` — implementation phases.
+- `docs/vibe-coding-workflow.md` — AI-assisted build workflow.
 - `prompts/` — prompt library for vibe coding.

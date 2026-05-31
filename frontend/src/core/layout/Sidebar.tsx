@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CalendarDays, MessageCircle, NotebookTabs, Plus, Search, Settings, Sparkles, UsersRound } from 'lucide-react';
+import { CalendarDays, MessageCircle, NotebookTabs, Package, Plus, Search, Settings, Sparkles, UsersRound } from 'lucide-react';
 import { ModuleConfig } from '../modules/modulesRegistry';
 
 const iconMap = {
@@ -7,6 +7,7 @@ const iconMap = {
   crm: UsersRound,
   chat: MessageCircle,
   notes: NotebookTabs,
+  package: Package,
   settings: Settings,
   sparkles: Sparkles,
   search: Search,

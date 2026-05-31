@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 export type ModuleLayout = 'list' | 'calendar' | 'chat' | 'form' | 'custom';
 
 export interface ModuleConfig {
@@ -14,11 +12,31 @@ export interface ModuleConfig {
   permissions?: string[];
 }
 
-const fallbackModules: ModuleConfig[] = [
+const staticModules: ModuleConfig[] = [
+  {
+    id: 'orders',
+    title: 'Orders',
+    route: '/admin/orders',
+    icon: 'crm',
+    layout: 'list',
+    nav_position: 10,
+    description: 'Order management and status tracking.',
+    enabled: true,
+  },
+  {
+    id: 'mailboxes',
+    title: 'Mailboxes',
+    route: '/admin/mailboxes',
+    icon: 'package',
+    layout: 'custom',
+    nav_position: 20,
+    description: 'Mailbox inventory and credential management.',
+    enabled: true,
+  },
   {
     id: 'example',
     title: 'Example Desk',
-    route: '/example',
+    route: '/admin/example',
     icon: 'sparkles',
     layout: 'list',
     nav_position: 90,
@@ -28,38 +46,5 @@ const fallbackModules: ModuleConfig[] = [
 ];
 
 export function useModules() {
-  const [modules, setModules] = useState<ModuleConfig[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      try {
-        const response = await fetch('/api/modules');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = (await response.json()) as ModuleConfig[];
-        if (!cancelled) {
-          setModules(data.sort((a, b) => a.nav_position - b.nav_position));
-        }
-      } catch (err) {
-        // During early vibe-coding sessions the backend may not be running.
-        // Use a local fallback so the UI shell remains testable.
-        if (!cancelled) {
-          setModules(fallbackModules);
-          setError(null);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  return { modules, loading, error };
+  return { modules: staticModules, loading: false, error: null as string | null };
 }
