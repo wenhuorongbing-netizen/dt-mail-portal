@@ -7,8 +7,8 @@ You are a senior full-stack product engineer. Design and implement a production-
 
 Project context:
 - Product name: D-Ticket Mail Portal.
-- Purpose: mobile-first customer mailbox portal + internal operations CRM for Deutschlandticket purchase-assistance workflows.
-- Important boundary: do not implement automated third-party account registration, CAPTCHA/OTP bypass, or automated ticket purchasing. Build internal workflow automation only.
+- Purpose: mobile-first wallet-only ticket handover portal + internal operations CRM for Deutschlandticket purchase-assistance workflows.
+- Important boundary: do not implement automated third-party account registration, CAPTCHA/OTP bypass, automated ticket purchasing, or customer account handover while an operator-owned payment method remains attached. Build internal workflow automation only.
 - The app must look professional and trustworthy, not like a generic AI admin dashboard.
 
 Tech stack:

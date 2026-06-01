@@ -11,6 +11,7 @@ Keep the minimum operational record needed to understand order progress. Do not 
 - Consent confirmation timestamp
 - Operator initials or identifier
 - High-level notes that do not reveal private customer data
+- Wallet delivery status and cleanup confirmation status
 
 ## Disallowed Data
 - Passwords
@@ -20,6 +21,7 @@ Keep the minimum operational record needed to understand order progress. Do not 
 - Full customer address records
 - Private account recovery information
 - Raw customer message dumps containing sensitive information
+- Long-lived Wallet add links after delivery is complete, unless a retention policy explicitly requires them
 
 ## Closure
 When an order reaches `closed`, retain only the minimum non-sensitive status trail unless a later approved policy requires otherwise.

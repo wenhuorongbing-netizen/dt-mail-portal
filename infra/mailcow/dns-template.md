@@ -1,24 +1,15 @@
-# DNS Template for buffjo.top — Scheme A
+# Legacy DNS Template
 
-Replace `1.2.3.4` with your Tencent Cloud CVM public IPv4.
+Status: Future optional path. Not used in current GitHub Pages + Supabase deployment.
 
-```text
-Type    Host                    Value
-A       mail                    1.2.3.4
-A       webmail                 1.2.3.4
-A       portal                  1.2.3.4
-A       ops                     1.2.3.4
-MX      tickets                 mail.buffjo.top priority 10
-TXT     tickets                 v=spf1 mx a:mail.buffjo.top ~all
-TXT     _dmarc.tickets          v=DMARC1; p=quarantine; rua=mailto:postmaster@tickets.buffjo.top
-CNAME   autoconfig.tickets      mail.buffjo.top
-CNAME   autodiscover.tickets    mail.buffjo.top
-```
+Use `infra/mailcow/dns-records-buffjo-top.md` as the current DNS template.
+This legacy note is kept only to avoid breaking old references.
 
-DKIM is generated after adding `tickets.buffjo.top` in mailcow.
+Do not point `portal.buffjo.top` or an `ops` host at the mail server from this
+file. `portal.buffjo.top` belongs to GitHub Pages and is configured separately.
 
-PTR/rDNS:
+Canonical mail DNS scope:
 
-```text
-1.2.3.4 -> mail.buffjo.top
-```
+- `mail.buffjo.top`
+- `webmail.buffjo.top`
+- `tickets.buffjo.top`

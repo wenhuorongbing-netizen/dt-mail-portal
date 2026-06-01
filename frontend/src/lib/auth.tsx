@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
+import type { OperatorAuthResult } from './operatorAuth';
+import { signInOrRegisterOperator } from './operatorAuth';
 import { supabase } from './supabase';
 
 interface AuthState {
@@ -7,6 +9,7 @@ interface AuthState {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signInOrRegister: (identifier: string, password: string) => Promise<OperatorAuthResult>;
   signOut: () => Promise<void>;
 }
 
@@ -36,12 +39,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message ?? null };
   }, []);
 
+  const signInOrRegister = useCallback((identifier: string, password: string) => {
+    return signInOrRegisterOperator(identifier, password);
+  }, []);
+
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signIn, signInOrRegister, signOut }}>
       {children}
     </AuthContext.Provider>
   );

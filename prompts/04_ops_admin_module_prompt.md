@@ -11,10 +11,10 @@ Frontend requirements:
 - Order list table.
 - New order form.
 - 10th-day price calculator.
-- Generated mailbox local part preview.
-- Generated handover text preview with copy buttons.
+- Controlled login email preview for internal purchase.
+- Wallet-only handover text preview with copy buttons.
 - Status timeline.
-- Buttons: Mark paid, Create mailbox, Mark ticket issued, Mark subscription checked, Mark delivered.
+- Buttons: Mark paid, Assign controlled email, Mark ticket issued, Mark wallet prepared, Mark subscription checked, Mark delivered.
 - Mobile-friendly design.
 
 Backend requirements:
@@ -22,7 +22,7 @@ Backend requirements:
 - Pydantic schemas.
 - CRUD endpoints.
 - Status transition endpoint.
-- Handover text generation endpoint.
+- Wallet-only handover text generation endpoint.
 - Price calculation helper:
   if day <= 10 => 1 month; else => 2 months.
 - No real mailcow API integration yet; use a mock mailbox creation endpoint.
@@ -30,8 +30,8 @@ Backend requirements:
 Copy rules:
 - Chinese customer-facing handover text.
 - Independent-service notice.
-- Clear distinction:
-  webmail username prefix vs full TicketPlus+ email.
+- Default customer copy must not include TicketPlus+ login email, OTP, webmail URL, or mailbox password.
+- Account/OTP handover copy is exception-only after payment-method risk is cleared.
 
 Do not automate TicketPlus+ registration or purchase.
 ```

@@ -6,28 +6,30 @@
 - Assume they may be inside WeChat browser.
 - Use large buttons and short instructions.
 - Avoid complex nested menus.
-- Provide copy buttons for email, password, and guide links.
+- Provide clear Wallet add buttons and copyable fallback links when available.
 - Keep key information above the fold.
 
 ## Customer portal mobile home
 
 Priority order:
 
-1. Login mailbox button.
-2. TicketPlus+ login guide.
+1. Add to Apple Wallet / Google Wallet.
+2. Pre-ride QR check.
 3. Important rules.
 4. Contact support.
 
 ## Handover message UX
 
-Every handover message must separate:
+Default wallet-only handover messages must separate:
 
 ```text
-Mailbox login username: dt202606001
-TicketPlus+ login email: dt202606001@tickets.buffjo.top
+Ticket month: 2026-06
+Wallet action: Add to Apple Wallet / Add to Google Wallet
+Pre-ride check: Open the QR code before inspection
 ```
 
-This avoids the most common confusion.
+Do not show TicketPlus+ login email, OTP, mailbox username, mailbox password, or
+webmail URL in default `wallet_only` mode.
 
 ## WeChat-specific checks
 
@@ -35,4 +37,5 @@ This avoids the most common confusion.
 - No hover-only behavior.
 - Links easy to tap.
 - Copyable text not hidden in images.
+- WeChat may not open Wallet links correctly; tell customers to open the link in Safari or Chrome if needed.
 - Dark mode not required, but contrast must stay readable.

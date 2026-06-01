@@ -7,8 +7,9 @@
 -- Security model:
 --   - anon role: can only call the get_handover_by_code() RPC.
 --     Cannot SELECT from mailbox_accounts, orders, or handover_codes directly.
---   - authenticated role (operators): full CRUD on all tables.
---     RLS restricts each operator to rows they own (operator_id = auth.uid()).
+--   - authenticated role (operators): CRUD through the admin UI.
+--     Orders, handover codes, and audit events are scoped by operator_id.
+--     Mailbox records are authenticated-only in the current MVP.
 --   - service_role key: bypasses all RLS. Must NEVER be used in the frontend.
 --
 -- The get_handover_by_code() function uses SECURITY DEFINER so it can
@@ -214,9 +215,8 @@ begin
   end if;
 
   -- Build the response JSON.
-  -- password_enc IS included: the customer needs it to log in to webmail
-  -- and retrieve OTP codes. This RPC is the only anonymous access path,
-  -- and RLS ensures no other data is exposed.
+  -- wallet_only is the default and hides all TicketPlus+ account login fields.
+  -- Exception modes expose only the fields explicitly allowed by the mailbox row.
   select json_build_object(
     'handover_id',      v_handover.id,
     'code',             v_handover.code,
@@ -227,9 +227,36 @@ begin
     'customer_label',   v_order.customer_label,
     'ticket_month',     v_order.ticket_month,
     'status',           v_order.status,
-    'mailbox_email',    v_mailbox.email_address,
-    'mailbox_password', v_mailbox.password_enc,
-    'mailbox_domain',   v_mailbox.domain
+    'mailbox_email',    case
+                          when coalesce(v_mailbox.delivery_mode, 'wallet_only') = 'wallet_only' then null
+                          else v_mailbox.email_address
+                        end,
+    'mailbox_password', case
+                          when coalesce(v_mailbox.delivery_mode, 'wallet_only') <> 'wallet_only'
+                            and v_mailbox.customer_can_login
+                          then v_mailbox.password_enc
+                          else null
+                        end,
+    'mailbox_domain',   v_mailbox.domain,
+    'mailbox_provider', v_mailbox.provider,
+    'delivery_mode',    coalesce(v_mailbox.delivery_mode, 'wallet_only'),
+    'mailbox_login_url', case
+                           when coalesce(v_mailbox.delivery_mode, 'wallet_only') <> 'wallet_only'
+                             and v_mailbox.customer_can_login
+                           then v_mailbox.login_url
+                           else null
+                         end,
+    'mailbox_username', case
+                          when coalesce(v_mailbox.delivery_mode, 'wallet_only') <> 'wallet_only'
+                            and v_mailbox.customer_can_login
+                          then coalesce(v_mailbox.username, split_part(v_mailbox.email_address, '@', 1))
+                          else null
+                        end,
+    'customer_can_login', case
+                            when coalesce(v_mailbox.delivery_mode, 'wallet_only') = 'wallet_only' then false
+                            else coalesce(v_mailbox.customer_can_login, false)
+                          end,
+    'otp_managed_by_operator', coalesce(v_mailbox.otp_managed_by_operator, true)
   ) into v_result;
 
   return v_result;
@@ -240,7 +267,7 @@ $$;
 grant execute on function public.get_handover_by_code(text) to anon;
 grant execute on function public.get_handover_by_code(text) to authenticated;
 
-comment on function public.get_handover_by_code(text) is 'RPC for customer handover lookup. Accepts a handover code, returns the handover record with order and mailbox info. mailbox_password IS included — the customer needs it to log in to webmail and retrieve OTP codes. Marks the handover as viewed on first access.';
+comment on function public.get_handover_by_code(text) is 'RPC for customer handover lookup. Accepts a handover code and returns one handover record. Default wallet_only hides TicketPlus+ login email, mailbox password, webmail URL, and username; exception modes expose login fields only when customer_can_login is true. Marks the handover as viewed on first access.';
 
 -- ============================================================
 -- 7. Helper: generate_handover_code()

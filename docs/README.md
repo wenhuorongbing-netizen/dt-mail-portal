@@ -22,6 +22,8 @@
 | File | Purpose |
 |------|---------|
 | [`ops/ticketplus-sop.md`](ops/ticketplus-sop.md) | Manual purchase SOP, 10th-day rules. |
+| [`ops/wallet-only-delivery.md`](ops/wallet-only-delivery.md) | Current default Wallet-only delivery workflow. |
+| [`ops/managed-otp-workflow.md`](ops/managed-otp-workflow.md) | Exception managed OTP workflow. |
 | [`ops/security-privacy.md`](ops/security-privacy.md) | Security, privacy, risk controls. |
 
 ## Planning
@@ -36,6 +38,9 @@
 | File | Purpose |
 |------|---------|
 | [`future/module-contract.md`](future/module-contract.md) | FastAPI module system. **Not used in Phase 1.** |
+| [`ops/email-infra-plan.md`](ops/email-infra-plan.md) | Future optional self-hosted email plan. **Not used in current deployment.** |
+| [`ops/email-acceptance-checklist.md`](ops/email-acceptance-checklist.md) | Future optional self-hosted email checklist. |
+| [`ops/email-troubleshooting.md`](ops/email-troubleshooting.md) | Future optional self-hosted email troubleshooting. |
 
 ## Archived
 

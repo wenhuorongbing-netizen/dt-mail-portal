@@ -1,28 +1,22 @@
-【您的 D-Ticket 专用邮箱账号已创建】
+【您的 D-Ticket 已出票，可添加到手机钱包】
 
-邮箱登录地址：
-https://webmail.buffjo.top
+请使用以下入口添加到手机钱包：
 
-邮箱用户名：
-{{mailbox_local_part}}
+Apple Wallet：
+{{apple_wallet_link}}
 
-邮箱密码：
-{{mailbox_password}}
+Google Wallet：
+{{google_wallet_link}}
 
-注意：登录邮箱时只输入用户名，不用输入 @tickets.buffjo.top。
+如果在微信里打不开，请复制链接到 Safari 或 Chrome 打开。
 
-TicketPlus+ 登录时请输入完整邮箱：
-{{full_email}}
-
-TicketPlus+ 登录步骤：
-1. 打开 TicketPlus+ App。
-2. 选择 Email Login。
-3. 输入完整邮箱：{{full_email}}
-4. 回到邮箱收取验证码。
-5. 回到 App 输入验证码。
-6. 打开 Deutschlandticket 二维码页面。
+乘车前请检查：
+1. 手机钱包里可以打开 Deutschlandticket 二维码。
+2. 二维码上方姓名与本人证件一致。
+3. 验票时请同时携带本人证件。
 
 重要提醒：
-- 月票为实名票，请使用本人证件乘车。
-- 查票前请提前登录 App，确认二维码可以显示。
-- 本服务为独立账号邮箱与购票协助服务，非 TicketPlus+、DB 或任何交通公司官方服务。
+- Deutschlandticket 是实名票，不可转让。
+- 车票为数字票，请提前打开二维码，不要临时找链接。
+- 本交付不包含 TicketPlus+ 账号登录、邮箱密码或验证码。
+- 本服务为独立购票协助与票务交付服务，非 TicketPlus+、DB 或任何交通公司官方服务。

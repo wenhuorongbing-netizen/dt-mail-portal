@@ -16,11 +16,14 @@ Phase 1 uses **Supabase** as the only backend. No FastAPI, no self-hosted databa
 
 ## Required environment variables
 
-The frontend needs exactly two environment variables. Create a `.env.local` file in the `frontend/` directory:
+The frontend needs the Supabase public URL and anon key. Create a `.env.local`
+file in the `frontend/` directory:
 
 ```env
 VITE_SUPABASE_URL=https://your-project-id.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJ...your-anon-key-here
+# Optional fallback only for external_mailbox mode:
+# VITE_WEBMAIL_URL=https://hosted-mail.example.com
 ```
 
 ### Where to find these values
@@ -50,7 +53,7 @@ This creates the following tables:
 
 | Table | Purpose |
 |-------|---------|
-| `mailbox_accounts` | Dedicated mailbox credentials (email, encrypted password, domain) |
+| `mailbox_accounts` | Operator-controlled TicketPlus+ login email records and optional hosted mailbox credentials |
 | `orders` | Customer orders (operator-owned, tracks status and pricing) |
 | `handover_codes` | Handover codes linked to orders (customers look up by code) |
 | `audit_events` | Operator action log (write-only from the app) |
@@ -69,8 +72,8 @@ This sets up:
 
 - **RLS enabled** on all four tables.
 - **anon role**: no direct table access. Can only call `get_handover_by_code()` RPC.
-- **authenticated role** (operators): full CRUD, restricted to their own rows via `operator_id = auth.uid()`.
-- **`get_handover_by_code(p_code)`** RPC: SECURITY DEFINER function that returns one handover record by code. `mailbox_password` IS included in the response — the customer needs it to log in to webmail and retrieve OTP codes. This is safe because the RPC is the only anonymous access path and RLS ensures no other data is exposed.
+- **authenticated role** (operators): admin CRUD. Orders, handover codes, and audit events are scoped by `operator_id = auth.uid()`. Mailbox records are authenticated-only in the current MVP.
+- **`get_handover_by_code(p_code)`** RPC: SECURITY DEFINER function that returns one handover record by code. Default `wallet_only` handovers must not expose TicketPlus+ login email, OTP, webmail URL, or mailbox password. `mailbox_password` is returned only when `customer_can_login = true`.
 - **`generate_handover_code()`** helper: generates unique 8-char alphanumeric codes.
 
 ## How RLS works
@@ -90,8 +93,8 @@ const { data, error } = await supabase.rpc('get_handover_by_code', {
 The `get_handover_by_code()` function:
 1. Looks up the code in `handover_codes`.
 2. If found, joins the related `orders` and `mailbox_accounts` rows.
-3. Returns a JSON object with handover info, order status, mailbox email, and mailbox password.
-4. The `mailbox_password` field is included intentionally — the customer needs it to log in to webmail and retrieve OTP codes. This is safe because the RPC is the only anonymous access path and RLS ensures no other data is exposed.
+3. Returns a JSON object with handover info, order status, delivery mode, Wallet instructions, and optional exception-mode login fields.
+4. Default `wallet_only` handovers hide TicketPlus+ login email and return `mailbox_password = null`. The password field is returned only when `customer_can_login = true`.
 5. Marks the handover as `viewed` on first access.
 6. If the code is invalid, returns `null`.
 
@@ -109,8 +112,9 @@ const { data, error } = await supabase
 
 RLS policies ensure:
 - Operators can only `SELECT` orders where `operator_id = auth.uid()`.
-- The same restriction applies to `INSERT`, `UPDATE`, and `DELETE`.
+- The same restriction applies to order `INSERT`, `UPDATE`, and `DELETE`.
 - `handover_codes` access is restricted to codes linked to the operator's orders.
+- `mailbox_accounts` access is authenticated-only in the current MVP.
 - `audit_events` is write-only for operators (they can insert and read their own entries).
 
 ### service_role key
@@ -127,14 +131,20 @@ It should only be used in:
 
 ## Setting up operator accounts
 
-Operators are Supabase Auth users. To create an operator:
+Operators are Supabase Auth users. The admin page supports a one-click
+operator entry flow:
 
-1. Go to **Authentication** → **Users** in the Supabase dashboard.
-2. Click **Add user** → **Create new user**.
-3. Enter the operator's email and password.
-4. The operator can now log in via the frontend's admin login page.
+1. The operator enters email and password.
+2. The frontend first calls `supabase.auth.signInWithPassword()`.
+3. If the account does not exist, the frontend calls `supabase.auth.signUp()`.
+4. If Supabase email confirmation is enabled, the operator confirms the email
+   before returning to log in.
 
-For production, consider enabling email confirmation or MFA.
+This is only for internal operators. Customers do not register or log in; they
+use handover-code URLs only.
+
+For production, restrict who can self-register as an operator and consider
+enabling email confirmation or MFA.
 
 ## Frontend integration
 
@@ -160,7 +170,7 @@ const { data, error } = await supabase.rpc('get_handover_by_code', {
 if (error || !data) {
   // Invalid code — show error
 } else {
-  // Display handover info (data.mailbox_email, data.instructions, etc.)
+  // Display handover info. In wallet_only mode, hide account-login fields and show Wallet instructions.
 }
 ```
 
@@ -186,7 +196,7 @@ const { error } = await supabase
   .insert({
     order_id: orderId,
     code: code,
-    instructions: 'Your mailbox login details...'
+    instructions: 'Wallet delivery instructions...'
   });
 ```
 
@@ -198,9 +208,16 @@ const { error } = await supabase
 |--------|------|-------|
 | id | uuid | Primary key |
 | email_address | text | Unique, e.g. `user@tickets.buffjo.top` |
-| password_enc | text | Encrypted password. Never return raw to frontend. |
+| provider | text | `manual`, `cloudflare_routing`, `hosted_mailbox`, `customer_mailbox`, or `other` |
+| delivery_mode | text | `wallet_only`, `managed_otp`, `external_mailbox`, or `customer_mailbox` |
+| login_url | text | Optional hosted mailbox login URL |
+| username | text | Optional customer-facing mailbox username |
+| password_enc | text | Nullable password. Return only when `customer_can_login = true`. Never return for default `wallet_only`. |
+| customer_can_login | boolean | Controls whether exception-mode handover may show mailbox login fields |
+| otp_managed_by_operator | boolean | True when operator receives OTP; default wallet-only handovers do not forward OTP to customers |
 | domain | text | Default `tickets.buffjo.top` |
 | status | text | `active` or `disabled` |
+| notes | text | Operator notes. Not visible to customer. |
 | created_at | timestamptz | Auto-set |
 | updated_at | timestamptz | Auto-updated via trigger |
 
@@ -226,7 +243,7 @@ const { error } = await supabase
 | created_at | timestamptz | Auto-set |
 | updated_at | timestamptz | Auto-updated via trigger |
 
-Order status flow: `requested` → `customer_authorized` → `account_registered` → `ticket_purchased` → `delivered_to_customer` → `closed` (or `exception` at any point)
+Order status flow: `requested` → `paid` → `mailbox_assigned` → `ticket_purchased` → `handover_created` → `delivered` → `closed` (or `exception` at any point)
 
 ### handover_codes
 

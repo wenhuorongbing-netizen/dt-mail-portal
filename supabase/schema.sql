@@ -17,15 +17,23 @@ create extension if not exists "pgcrypto";
 
 -- ------------------------------------------------------------
 -- mailbox_accounts
--- Stores the dedicated mailbox credentials for each customer.
+-- Stores the operator-controlled login email or hosted mailbox credentials.
 -- Operators import or type these manually in Phase 1.
--- The password_enc field should contain an encrypted value.
--- Never store plaintext passwords in production.
+-- Default mode is wallet_only: customers receive only official Wallet delivery
+-- instructions, not TicketPlus+ account login or mailbox credentials.
 -- ------------------------------------------------------------
 create table if not exists public.mailbox_accounts (
   id              uuid primary key default gen_random_uuid(),
   email_address   text        not null unique,
-  password_enc    text        not null,          -- encrypted password; never return raw to frontend
+  provider        text        not null default 'manual'
+                                      check (provider in ('manual', 'cloudflare_routing', 'hosted_mailbox', 'customer_mailbox', 'other')),
+  delivery_mode   text        not null default 'wallet_only'
+                                      check (delivery_mode in ('wallet_only', 'managed_otp', 'external_mailbox', 'customer_mailbox')),
+  login_url       text,
+  username        text,
+  password_enc    text,                         -- nullable; returned only when customer_can_login = true
+  customer_can_login boolean not null default false,
+  otp_managed_by_operator boolean not null default true,
   domain          text        not null default 'tickets.buffjo.top',
   status          text        not null default 'active'
                                       check (status in ('active', 'disabled')),
@@ -34,8 +42,14 @@ create table if not exists public.mailbox_accounts (
   updated_at      timestamptz not null default now()
 );
 
-comment on table  public.mailbox_accounts is 'Dedicated mailbox credentials for customers. Passwords must be encrypted before insert.';
-comment on column public.mailbox_accounts.password_enc is 'Encrypted mailbox password. Use pgp_sym_encrypt() or application-level encryption.';
+comment on table  public.mailbox_accounts is 'Operator-controlled login email or hosted mailbox credentials. Default mode is wallet_only, where customers receive only official Wallet delivery instructions and no TicketPlus+ account login.';
+comment on column public.mailbox_accounts.provider is 'Mailbox source: manual, cloudflare_routing, hosted_mailbox, customer_mailbox, or other.';
+comment on column public.mailbox_accounts.delivery_mode is 'wallet_only hides all account login fields; managed_otp is an exception; external_mailbox/customer_mailbox may show login fields when customer_can_login is true.';
+comment on column public.mailbox_accounts.login_url is 'Optional hosted webmail URL for approved customer-login exception modes.';
+comment on column public.mailbox_accounts.username is 'Optional customer-facing mailbox username. Defaults can be derived from email local part.';
+comment on column public.mailbox_accounts.password_enc is 'Nullable stored password. Return through handover RPC only when customer_can_login is true. Add reversible encryption before production customer data.';
+comment on column public.mailbox_accounts.customer_can_login is 'If false, the handover RPC returns null for mailbox_password and the customer UI must not show webmail login. wallet_only always hides customer login fields.';
+comment on column public.mailbox_accounts.otp_managed_by_operator is 'If true, the operator receives OTP and forwards it through the approved support channel.';
 
 -- ------------------------------------------------------------
 -- orders

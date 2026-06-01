@@ -5,4 +5,4 @@ Architecture: docs/architecture.md
 Module contract: docs/module-contract.md
 Prompt library: prompts/
 
-Safety boundary: This project automates internal operations and mailbox creation only. It must not automate third-party account registration, CAPTCHA/OTP bypass, or payments.
+Safety boundary: This project automates internal operations and wallet-only handover text only. It must not automate third-party account registration, CAPTCHA/OTP bypass, or payments, and it must not expose customer account login while an operator-owned payment method remains attached.

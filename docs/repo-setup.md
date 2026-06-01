@@ -25,7 +25,8 @@ git push -u origin main
 main                  stable
 feat/customer-portal  portal UI
 feat/admin-mvp        order workflow
-feat/email-infra      mailcow/Roundcube integration
+feat/wallet-delivery  wallet-only handover workflow
+feat/email-infra      optional mailcow/Roundcube integration
 feat/deployment       Tencent Cloud deployment
 ```
 
@@ -49,7 +50,7 @@ mvp
 ```text
 MVP-1 Portal Prototype
 MVP-2 Admin Workflow
-MVP-3 Webmail Integration
-MVP-4 Real Server Test
+MVP-3 Wallet Delivery Hardening
+MVP-4 Optional Email Infrastructure Test
 MVP-5 Launch Checklist
 ```

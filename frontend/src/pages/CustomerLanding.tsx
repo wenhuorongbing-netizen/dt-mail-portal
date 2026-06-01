@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, ShieldCheck, BookOpen, HelpCircle, ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, BookOpen, HelpCircle, Search, ShieldCheck, Wallet } from 'lucide-react';
 import { useState } from 'react';
 
 export default function CustomerLanding() {
@@ -22,25 +22,24 @@ export default function CustomerLanding() {
         </div>
         <h1 style={{ fontSize: '1.6rem', margin: '0 0 8px', fontFamily: 'var(--font-display)' }}>D-Ticket 交付中心</h1>
         <p style={{ margin: 0, color: 'rgba(16,25,47,0.62)', fontSize: '0.85rem', lineHeight: '1.5' }}>
-          Deutschlandticket 专用邮箱与账号交付服务
+          Deutschlandticket 购票协助与 Wallet 交付说明
         </p>
       </header>
 
       <div style={{ background: 'rgba(31,155,209,0.06)', border: '1px solid rgba(31,155,209,0.12)', borderRadius: '16px', padding: '16px', fontSize: '0.82rem', lineHeight: '1.5', display: 'flex', gap: '10px' }}>
         <ShieldCheck size={18} style={{ flexShrink: 0, color: 'var(--accent-2)', marginTop: '2px' }} />
         <div>
-          <strong>独立服务声明：</strong>本项目不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 的官方服务。我们仅提供邮箱托管与购票协助。
+          <strong>独立服务声明：</strong>本项目不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 官方服务。我们仅提供购票协助和交付说明。
         </div>
       </div>
 
-      {/* Code input — primary action */}
       <form onSubmit={handleSubmit} style={{ background: 'var(--card)', border: '1px solid rgba(16,25,47,0.08)', borderRadius: '18px', padding: '18px', boxShadow: 'var(--shadow)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Mail size={18} style={{ color: 'var(--accent)' }} />
-          <h3 style={{ margin: 0, fontSize: '0.95rem' }}>打开我的账号</h3>
+          <Wallet size={18} style={{ color: 'var(--accent)' }} />
+          <h3 style={{ margin: 0, fontSize: '0.95rem' }}>打开我的交付页</h3>
         </div>
         <p style={{ margin: 0, fontSize: '0.82rem', color: 'rgba(16,25,47,0.6)' }}>
-          输入交付码查看邮箱凭证和登录教程：
+          输入交付码查看 Wallet 添加说明、乘车前检查和客服备注。
         </p>
         <div style={{ display: 'flex', gap: '8px' }}>
           <input
@@ -69,8 +68,8 @@ export default function CustomerLanding() {
               <BookOpen size={20} style={{ color: 'var(--accent)' }} />
             </div>
             <div style={{ flex: 1 }}>
-              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>TicketPlus+ 登录教程</h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>激活车票的详细步骤和常见问题</p>
+              <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>Wallet 添加指南</h3>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>Apple Wallet / Google Wallet 添加步骤和常见问题</p>
             </div>
             <ArrowRight size={18} style={{ color: 'rgba(16,25,47,0.3)' }} />
           </div>
@@ -83,7 +82,7 @@ export default function CustomerLanding() {
             </div>
             <div style={{ flex: 1 }}>
               <h3 style={{ margin: '0 0 4px', fontSize: '0.95rem' }}>规则与费用说明</h3>
-              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>10号规则、计费方式、退订政策</p>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: 'rgba(16,25,47,0.6)' }}>10 号规则、计费方式、退订政策</p>
             </div>
             <ArrowRight size={18} style={{ color: 'rgba(16,25,47,0.3)' }} />
           </div>

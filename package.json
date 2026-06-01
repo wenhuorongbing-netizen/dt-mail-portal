@@ -1,0 +1,14 @@
+{
+  "name": "dt-mail-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm --prefix frontend install",
+    "dev": "npm --prefix frontend run dev -- --host 0.0.0.0",
+    "start": "npm run dev",
+    "build": "npm --prefix frontend run build",
+    "typecheck": "npm --prefix frontend run typecheck",
+    "test": "npm --prefix frontend run test:run",
+    "deploy:check": "npm --prefix frontend run deploy:check"
+  }
+}

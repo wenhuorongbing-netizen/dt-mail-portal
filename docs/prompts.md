@@ -15,7 +15,7 @@ Run frontend build/lint and backend compile checks.
 
 ```text
 Create a mobile-first customer portal page for <topic>.
-Keep the content operational and clear. Do not add payment, public signup, or automated TicketPlus+ registration.
+Keep the content operational and clear. Default delivery is `wallet_only`; do not add customer account login, payment, public signup, or automated TicketPlus+ registration.
 ```
 
 ## Deployment Task

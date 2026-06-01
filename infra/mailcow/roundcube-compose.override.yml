@@ -1,3 +1,8 @@
+# Status: Future optional path. Not used in current GitHub Pages + Supabase deployment.
+# Current deployment uses managed_otp and does not run Roundcube.
+# Phase E0 Roundcube service for customer OTP webmail.
+# Merge this into /opt/mailcow-dockerized/docker-compose.override.yml.
+# Customers should use webmail only; do not document SMTP/IMAP clients for them.
 services:
   roundcube:
     image: roundcube/roundcubemail:latest-apache

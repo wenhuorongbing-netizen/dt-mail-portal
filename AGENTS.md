@@ -8,13 +8,13 @@ This file defines how AI agents should work inside this repository.
 
 ## Product context
 
-We are building a professional, mobile-first mailbox portal and operations admin panel for Deutschlandticket purchase-assistance workflows.
+We are building a professional, mobile-first ticket handover portal and operations admin panel for Deutschlandticket purchase-assistance workflows.
 
 **Phase 1 architecture: GitHub Pages + Supabase.**
 
 The system includes:
 
-- Customer handover page (static React on GitHub Pages).
+- Customer wallet-only handover page (static React on GitHub Pages).
 - Admin/operator panel (same frontend, different route, Supabase Auth).
 - Supabase Postgres for data (orders, mailboxes, handover records).
 - Supabase RLS and RPC for access control.
@@ -24,7 +24,7 @@ The system includes:
 
 - FastAPI backend for complex operations and module system.
 - mailcow API integration for automated mailbox creation.
-- Customer webmail via Roundcube.
+- Optional exception-mode webmail via Roundcube.
 
 The project must feel professional, trustworthy, and operationally efficient. Customers will often open pages inside mobile browsers or WeChat, so mobile-first UX is critical.
 
@@ -33,7 +33,7 @@ The project must feel professional, trustworthy, and operationally efficient. Cu
 AI agents must not implement or propose:
 
 - CAPTCHA bypass.
-- OTP interception beyond normal customer-authorized mailbox access.
+- OTP interception or account-login handover that exposes an operator-owned payment method.
 - Automated third-party platform account creation.
 - Automated third-party ticket purchase or payment flows.
 - Browser automation that violates third-party terms.
@@ -49,6 +49,7 @@ Agents may implement:
 - Manual SOP checklists.
 - UI/UX for customers and admins.
 - Operator authentication (via Supabase Auth).
+- Wallet-only ticket delivery instructions using official issuer flows.
 
 Always include the independent-service notice where customer-facing pages discuss ticket providers.
 
@@ -64,6 +65,7 @@ Always include the independent-service notice where customer-facing pages discus
 8. Do not add raw HTML styling inside modules if a shared UI component exists.
 9. Avoid storing personal data unless the workflow requires it.
 10. Encrypt or minimize sensitive personal data such as birthdates and mailbox passwords.
+11. Default customer delivery is `wallet_only`; do not expose TicketPlus+ login email, OTP, webmail URL, or mailbox password while an operator-owned payment method remains attached.
 
 ## Frontend design direction
 
@@ -104,7 +106,7 @@ Frontend must be:
 - Customer handover lookup calls an RPC function (`get_handover_by_code`). Do not query the `handover_codes` table directly from the frontend for anonymous users.
 - Operator CRUD operations use the Supabase client with the user's auth session. RLS policies enforce access.
 - Use Supabase migrations or SQL scripts for schema changes. Track them in the repo.
-- Sensitive fields (mailbox passwords) must be encrypted before storing in Postgres.
+- Sensitive fields (mailbox passwords) must be encrypted before storing in Postgres and must not be returned for default `wallet_only` handovers.
 
 ## Backend rules (future — Phase 3+)
 
@@ -128,10 +130,12 @@ Sensitive fields:
 - customer contact handle
 - mailbox password
 - payment notes
+- Wallet add links
 
 Rules:
 
 - Prefer not to store raw passenger data after handover.
+- Prefer not to store long-lived Wallet add links after delivery.
 - If stored, add encryption before production.
 - Never commit `.env`, API keys, passwords, DB dumps, or real customer data.
 - The Supabase `service_role` key is a secret. Never commit it or expose it in the frontend.

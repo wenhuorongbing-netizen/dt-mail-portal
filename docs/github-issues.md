@@ -6,7 +6,7 @@ Create these issues after pushing the repo.
 
 - #1 Initialize monorepo project structure
 - #2 Create mobile-first customer landing page
-- #3 Create TicketPlus+ login guide page
+- #3 Create Wallet delivery guide page
 - #4 Create rules and non-official disclaimer page
 - #5 Create privacy and terms draft pages
 
@@ -19,20 +19,20 @@ Create these issues after pushing the repo.
 - #10 Implement handover text generator
 - #11 Add order status workflow
 
-## Milestone: MVP-3 Webmail Integration
+## Milestone: MVP-3 Wallet Delivery Hardening
 
-- #12 Draft Roundcube login theme
-- #13 Configure username default domain behavior
-- #14 Add mailcow API client
-- #15 Add mailbox creation action in admin
+- #12 Add wallet-only handover template
+- #13 Hide account-login fields in wallet-only mode
+- #14 Add payment-method exposure checklist
+- #15 Add exception-mode managed OTP checklist
 
-## Milestone: MVP-4 Real Server Test
+## Milestone: MVP-4 Optional Email Infrastructure Test
 
 - #16 Tencent Cloud deployment checklist
 - #17 DNS record checklist for buffjo.top
 - #18 Install mailcow on staging server
-- #19 Test TicketPlus+ OTP delivery
-- #20 Test two real mailboxes and handover flow
+- #19 Test TicketPlus+ OTP delivery for operator-controlled accounts
+- #20 Test two real wallet-only handover flows
 
 ## Milestone: MVP-5 Launch Checklist
 
@@ -40,4 +40,4 @@ Create these issues after pushing the repo.
 - #22 Add backup script
 - #23 Add audit log module
 - #24 Add data deletion SOP
-- #25 Final customer copy review
+- #25 Final wallet-only customer copy review

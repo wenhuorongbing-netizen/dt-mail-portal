@@ -30,7 +30,7 @@ const staticModules: ModuleConfig[] = [
     icon: 'package',
     layout: 'custom',
     nav_position: 20,
-    description: 'Mailbox inventory and credential management.',
+    description: 'Operator-controlled email inventory and Wallet-first delivery mode management.',
     enabled: true,
   },
   {

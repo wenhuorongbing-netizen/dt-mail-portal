@@ -7,12 +7,10 @@ Tone:
 Professional, concise, operational, reassuring.
 
 Must include:
-- Mailbox login URL.
-- Mailbox username prefix.
-- Mailbox password placeholder.
-- Full TicketPlus+ login email.
-- Reminder that webmail username does not need suffix.
-- Reminder that TicketPlus+ login needs full email.
+- Apple Wallet / Google Wallet add instructions or placeholders.
+- WeChat fallback instruction: open Wallet links in Safari or Chrome if needed.
+- Reminder to open the QR code before inspection.
+- Reminder to carry matching ID.
 - 10th-day rule.
 - Non-refundable after issue.
 - Real-name ticket reminder.
@@ -22,10 +20,11 @@ Avoid:
 - Official affiliation claims.
 - Overpromising refunds.
 - Saying screenshots are enough.
+- Giving TicketPlus+ login email, OTP, mailbox password, or webmail URL in default copy.
 - Suspicious words like 破解/绕过/内部渠道.
 
 Output:
 - One pre-payment confirmation message.
-- One account handover message.
+- One wallet-only handover message.
 - One after-sales troubleshooting message.
 ```

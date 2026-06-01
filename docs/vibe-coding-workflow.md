@@ -8,7 +8,7 @@ Never ask an AI agent to "build everything". Give it one slice, one acceptance t
 
 ## Current architecture context
 
-**Phase 1 is GitHub Pages + Supabase.** No FastAPI backend, no mailcow, no self-hosted database. The frontend is a React/Vite static build deployed to GitHub Pages. Supabase handles Auth, Postgres, RLS, and RPC.
+**Phase 1 is GitHub Pages + Supabase.** No FastAPI backend, no mailcow, no Roundcube, no Tencent Cloud CVM, no self-hosted database. The frontend is a React/Vite static build deployed to GitHub Pages. Supabase handles Auth, Postgres, RLS, and RPC.
 
 Read `docs/architecture.md` before starting any implementation work.
 
@@ -56,22 +56,22 @@ Before accepting:
 5. Admin login page (Supabase Auth).
 6. Admin order list (CRUD on `orders` table via Supabase client).
 7. Admin new order form.
-8. Admin mailbox import form (manual entry into `mailboxes` table).
+8. Admin controlled-login record form (manual entry into `mailbox_accounts`, default customer delivery `wallet_only`).
 9. Admin handover record creation (generate code, write instructions).
 10. Status workflow (order status updates).
 11. Audit log (operator actions).
 12. GitHub Pages deployment setup.
 13. Custom domain configuration.
-14. UX polish and mobile testing.
+14. Wallet-only workflow hardening.
+15. UX polish and mobile testing.
 
 ## Future build order (Phase 3+)
 
 1. FastAPI backend skeleton activation.
 2. Module loader system.
-3. mailcow API integration.
-4. Roundcube theme/config.
-5. Tencent Cloud deployment docs.
-6. Real email test.
+3. Optional hosted mailbox integration for approved exception modes.
+4. Future optional self-hosted mailcow/Roundcube path only if explicitly reopened.
+5. Real routed-email OTP test for operator-controlled accounts.
 7. Launch hardening.
 
 ## Prompt chaining

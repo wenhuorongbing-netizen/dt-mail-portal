@@ -1,135 +1,105 @@
 # D-Ticket Mail Portal
 
-A mobile-first mailbox portal + admin panel for a Deutschlandticket purchase-assistance workflow.
+Mobile-first customer handover portal and admin panel for a Deutschlandticket purchase-assistance workflow.
 
-**MVP architecture: GitHub Pages + Supabase.** The frontend is a React/Vite static build deployed to GitHub Pages. Supabase provides Auth, Postgres, RLS, and RPC. No custom backend server in Phase 1.
+**Phase 1 architecture: GitHub Pages + Supabase.** The frontend is a React/Vite static build deployed to GitHub Pages. Supabase provides Auth, Postgres, RLS, and RPC. There is no custom backend server in Phase 1.
 
-> Independent service notice: this project is not an official TicketPlus+, Deutsche Bahn, BVG, Deutschlandticket, Ticketmaster, or transport-company service. It is a mailbox/account handover and operational workflow system for purchase assistance.
+> Independent service notice: this project is not an official TicketPlus+, Deutsche Bahn, BVG, Deutschlandticket, Ticketmaster, or transport-company service. It is a purchase-assistance and ticket handover workflow system.
 
-## How it works
+## Current Workflow
 
-1. Operator creates an order and manually imports/types mailbox credentials into Supabase.
-2. Operator creates a handover record with instructions and a unique code.
-3. Customer receives a handover link (e.g. `portal.buffjo.top/h/abc123`).
-4. Customer opens the link — sees mailbox login and TicketPlus+ guide. No login required.
-5. Operator tracks order status through the admin panel.
+1. Operator creates an order and records the operator-controlled TicketPlus+ login email internally.
+2. Operator purchases manually and prepares official Apple Wallet / Google Wallet delivery links from the issuer flow.
+3. Operator creates a Wallet-only handover record with a unique code.
+4. Customer opens `/#/h/:code` and sees Wallet add instructions, ticket rules, and support information.
+5. Operator tracks order status in the admin panel.
 
-Customers do **not** register or log in. They access exactly one handover record via code.
+Customers do **not** register or log in. By default, customers do **not** receive TicketPlus+ login email, OTP, mailbox password, or webmail access.
 
-## What this repo includes
+## What This Repo Includes
 
-- React + TypeScript + Vite frontend (static, deploys to GitHub Pages).
-- Supabase integration (Auth, Postgres, RLS, RPC).
-- `AGENTS.md` for AI coding agents.
-- Docs for architecture, roadmap, product brief, security, and workflow.
-- FastAPI backend skeleton (for future automation phases, not used in MVP).
-- Module config contract (for future phases).
+- React + TypeScript + Vite frontend.
+- Supabase Auth, Postgres, RLS, and RPC SQL files.
+- Wallet-only customer handover UI.
+- Admin order and email inventory panels.
+- Vitest tests for API wrappers, handover view logic, order handover text, operator auth, and Supabase SQL contracts.
+- GitHub Actions for CI and GitHub Pages deployment.
+- Future backend skeleton/docs only; not part of Phase 1 deployment.
 
-## Target production domains
+## One-Step Commands
 
-```text
-portal.buffjo.top       customer portal + admin panel (GitHub Pages)
-webmail.buffjo.top      customer mailbox login (future — Roundcube)
-mail.buffjo.top         mail host (future — mailcow)
-tickets.buffjo.top      customer mailbox domain (future)
-```
-
-## Phase 1 — Static frontend + Supabase
-
-No custom backend. No server to rent.
-
-1. Create a Supabase project (free tier works for development).
-2. Set up schema: `orders`, `mailboxes`, `handover`, `audit_log`.
-3. Implement RLS policies and `get_handover_by_code` RPC function.
-4. Build React frontend with Supabase JS client.
-5. Deploy to GitHub Pages (GitHub Actions or `gh-pages` branch).
-6. Configure custom domain.
-
-### Local development
+Install frontend dependencies:
 
 ```bash
-cd frontend
-npm install
+npm run install:all
+```
+
+Start local development:
+
+```bash
 npm run dev
 ```
 
-Create a `.env.local` with your Supabase credentials:
+Run the deploy gate:
+
+```bash
+npm run deploy:check
+```
+
+`deploy:check` runs Vitest, builds the production frontend, and scans the bundle for forbidden `service_role`-style tokens.
+
+## Environment
+
+Create `frontend/.env.local` from `frontend/.env.example`:
 
 ```text
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJ...
+# Optional only for approved customer-login exception modes:
+# VITE_WEBMAIL_URL=https://hosted-mail.example.com
+# Optional operator short-login suffix:
+# VITE_OPERATOR_AUTH_DOMAIN=operators.localhost
+# Optional; keep aligned with Supabase Auth password policy:
+# VITE_OPERATOR_MIN_PASSWORD_LENGTH=6
+# Optional GitHub Pages base path override:
+# VITE_BASE_PATH=/dt-mail-portal/
 ```
 
-> **Never commit `.env.local` or expose the `service_role` key in the frontend.**
+Never commit `.env.local`. Never expose the Supabase `service_role` key in frontend code, environment variables, GitHub Pages variables, or build artifacts.
 
-### GitHub Pages deployment
+Operator login accepts a short account name. For example, typing `abc` is sent to Supabase Auth as `abc@operators.localhost` by default, or as `abc@<VITE_OPERATOR_AUTH_DOMAIN>` when configured. Supabase's default password policy still requires at least 6 characters; lowering this for `482`-style short passwords requires matching Supabase Auth settings and is not recommended for production.
 
-The repository includes a GitHub Actions workflow (`.github/workflows/pages.yml`) that builds the frontend and deploys to GitHub Pages on every push to `main`.
+## GitHub Pages Deployment
 
-**Setup steps:**
+The repository includes `.github/workflows/pages.yml`. On push to `main`, it installs frontend dependencies, runs `npm run deploy:check`, and uploads `frontend/dist` to GitHub Pages.
 
-1. **Enable GitHub Pages** — go to your repo → Settings → Pages → set **Source** to **GitHub Actions**.
-2. **Add repository variables** — go to Settings → Secrets and variables → Actions → Variables tab:
-   - `VITE_SUPABASE_URL` — your Supabase project URL (e.g. `https://your-project.supabase.co`)
-   - `VITE_SUPABASE_ANON_KEY` — your Supabase **anon** public key
-3. Push to `main` or trigger the workflow manually from the Actions tab.
+Setup:
 
-> The `anon` key is safe to expose in the frontend bundle — RLS policies control all access. **Never** add the `service_role` key as a variable or secret for this workflow.
+1. Enable GitHub Pages in repo Settings, Pages, Source: **GitHub Actions**.
+2. Add repository variables under Settings, Secrets and variables, Actions, Variables:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_WEBMAIL_URL` only if an exception-mode webmail fallback is needed
+   - `VITE_OPERATOR_AUTH_DOMAIN` optional; use a real email domain if Supabase email confirmations stay enabled
+   - `VITE_BASE_PATH` optional; GitHub Actions auto-detects `/<repo>/` for the default `github.io/<repo>/` Pages domain
+3. Run `supabase/schema.sql`, then `supabase/policies.sql`, then pending files in `supabase/migrations/` for existing databases.
 
-**Custom domain** — after the first deploy, go to Settings → Pages → Custom domain and enter your domain (e.g. `portal.buffjo.top`). Add a `CNAME` DNS record pointing to `<username>.github.io`.
+For a zero-cost deployment, use the GitHub Pages default URL (`https://<owner>.github.io/<repo>/`) and the Supabase project URL (`https://<project-ref>.supabase.co`). A custom domain is optional and not required.
 
-### Future backend (Phase 3+)
+## Security Rules
 
-The FastAPI skeleton remains in the repo for future automation:
+- Frontend uses only the Supabase `anon` key.
+- Customer lookup uses only `get_handover_by_code(p_code text)`.
+- Wallet-only handovers hide TicketPlus+ login email, mailbox password, webmail URL, and mailbox username.
+- `managed_otp`, `external_mailbox`, and `customer_mailbox` are exception modes only.
+- Do not give customers account access while an operator-owned payment method remains attached.
+- Do not automate CAPTCHA, OTP bypass, third-party account creation, third-party payment, or ticket purchase.
 
-```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
+## Key Docs
 
-This is not used in Phase 1.
-
-## Security rules
-
-- `service_role` key must NEVER enter the frontend bundle.
-- Frontend uses only the `anon` key.
-- Customer handover lookup uses Supabase RPC + RLS — customers can only see their own record.
-- Operators authenticate via Supabase Auth.
-- Sensitive fields (passwords, birthdates) are encrypted or minimized.
-- Never commit `.env`, API keys, passwords, or real customer data.
-
-## Non-negotiable product boundaries
-
-This project may automate:
-
-- Internal order workflow.
-- Handover code generation.
-- Status tracking.
-- Manual SOP checklist display.
-- Customer handover text delivery.
-
-This project should **not** automate:
-
-- Third-party account registration at TicketPlus+ or similar platforms.
-- CAPTCHA/OTP bypass.
-- Automated payment.
-- Platform rule evasion.
-- Impersonating official ticket providers.
-
-Keep the system professional, efficient, and compliant.
-
-## Key docs
-
-- [`docs/CURRENT.md`](docs/CURRENT.md) — **single source of truth** for Phase 1.
-- [`docs/README.md`](docs/README.md) — documentation map.
-- `AGENTS.md` — instructions for AI coding agents.
-- [`docs/product/product-brief.md`](docs/product/product-brief.md) — project purpose and product scope.
-- [`docs/architecture.md`](docs/architecture.md) — technical architecture (Supabase-first).
-- [`docs/supabase/setup.md`](docs/supabase/setup.md) — Supabase setup, schema, RLS, RPC.
-- [`docs/roadmap.md`](docs/roadmap.md) — implementation phases.
-- [`docs/ux/design-system.md`](docs/ux/design-system.md) — visual direction.
-- [`docs/ops/ticketplus-sop.md`](docs/ops/ticketplus-sop.md) — manual purchase workflow.
-- [`docs/vibe-coding-workflow.md`](docs/vibe-coding-workflow.md) — AI-assisted build workflow.
+- [`docs/CURRENT.md`](docs/CURRENT.md): single source of truth for Phase 1.
+- [`docs/ops/wallet-only-delivery.md`](docs/ops/wallet-only-delivery.md): default Wallet-only workflow.
+- [`docs/ops/managed-otp-workflow.md`](docs/ops/managed-otp-workflow.md): managed OTP exception workflow.
+- [`docs/supabase/setup.md`](docs/supabase/setup.md): Supabase setup, schema, RLS, RPC.
+- [`docs/architecture.md`](docs/architecture.md): Supabase-first architecture.
+- [`AGENTS.md`](AGENTS.md): AI coding instructions.

@@ -14,6 +14,6 @@ export const supabase = createClient(
   supabaseAnonKey ?? 'placeholder',
 );
 
-/** Configured webmail URL — never derive from mailbox domain */
+/** Optional fallback webmail URL for approved customer-login exception modes only. */
 export const WEBMAIL_URL =
   import.meta.env.VITE_WEBMAIL_URL ?? 'https://webmail.buffjo.top';

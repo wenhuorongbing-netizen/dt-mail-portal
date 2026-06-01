@@ -7,7 +7,8 @@ Use this checklist as a manual confirmation guide. Do not store sensitive custom
 - Customer understands the target event, quantity, ticket type, seating/price constraints, and maximum budget.
 - Customer authorizes the operator to perform only the agreed manual actions.
 - Customer understands platform account, transfer, cancellation, and refund rules may vary.
-- Customer confirms whether delivery is by platform transfer, email, app account, pickup, or another approved channel.
+- Customer understands default delivery is Apple Wallet / Google Wallet access, not TicketPlus+ account handover.
+- Customer confirms whether any exception delivery is by platform transfer, email, app account, pickup, or another approved channel.
 
 ## Prohibited Storage
 Do not store:
@@ -15,6 +16,7 @@ Do not store:
 - payment card numbers,
 - CVV codes,
 - one-time codes,
+- TicketPlus+ OTP codes except as transient operator workflow messages,
 - identity documents,
 - bank details,
 - full customer address records,

@@ -63,10 +63,13 @@ At narrow widths:
 Use concise operational language:
 
 - “登录邮箱”
-- “复制完整邮箱”
-- “查看验证码”
-- “打开 TicketPlus+ App”
+- “添加到 Apple Wallet”
+- “添加到 Google Wallet”
+- “乘车前检查二维码”
 - “重要规则”
+
+Use “登录邮箱”, “复制完整邮箱”, and “查看验证码” only in approved exception
+customer-login modes.
 
 Avoid suspicious or unofficial-sounding terms:
 

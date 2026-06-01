@@ -4,7 +4,7 @@
 You are a senior frontend designer-engineer. Build a distinctive, production-grade React + TypeScript interface for D-Ticket Mail Portal.
 
 Product:
-A mobile-first customer portal and internal operations desk for a Deutschlandticket mailbox/account handover service.
+A mobile-first customer portal and internal operations desk for a Deutschlandticket wallet-only ticket handover service.
 
 Design direction:
 Professional transit operations desk. It must feel refined, trustworthy, and operational, not like a generic SaaS dashboard.
@@ -27,15 +27,16 @@ Avoid:
 
 Implement:
 - Customer portal landing page.
-- Mobile login entry card.
-- TicketPlus+ guide page.
+- Mobile Wallet delivery card.
+- Wallet delivery guide page.
 - Rules page with 10th-day explanation.
 - Internal admin dashboard shell.
 - Use shared UI components from core/ui.
 
 Copy requirements:
 - Add independent-service notice.
-- Clearly separate mailbox username prefix from full TicketPlus+ email.
+- Default customer pages must not show TicketPlus+ login email, OTP, mailbox password, or webmail URL.
+- Wallet-only flow should prioritize Add to Apple Wallet / Google Wallet and pre-ride QR checks.
 - Keep Chinese copy concise and operational.
 
 Output working React components and CSS. Keep TypeScript strict.

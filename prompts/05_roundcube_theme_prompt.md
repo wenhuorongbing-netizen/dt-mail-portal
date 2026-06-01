@@ -1,10 +1,13 @@
-# Prompt — Roundcube Customer Webmail Theme/Config
+# Prompt — Roundcube Exception-Mode Webmail Theme/Config
+
+Use this only for future approved exception mailbox modes. The current default
+customer delivery is wallet-only and must not require customer webmail access.
 
 ```text
-You are configuring a customer-facing Roundcube webmail login for D-Ticket Mail Portal.
+You are configuring an exception-mode Roundcube webmail login for D-Ticket Mail Portal.
 
 Goal:
-Customers should log in to webmail using only the local part, e.g. `dt202606001`, and the system should automatically append `@tickets.buffjo.top`.
+Approved exception-mode users should log in to webmail using only the local part, e.g. `dt202606001`, and the system should automatically append `@tickets.buffjo.top`.
 
 Requirements:
 - Use Roundcube Docker config.

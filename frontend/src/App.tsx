@@ -1,15 +1,14 @@
 import { Navigate, Route, Routes, useParams } from 'react-router-dom';
-import { Shell } from './core/layout/Shell';
 import { ModulePage } from './core/layout/ModulePage';
+import { Shell } from './core/layout/Shell';
 import { useModules } from './core/modules/modulesRegistry';
 import { useAuth } from './lib/auth';
-import CustomerLanding from './pages/CustomerLanding';
-import HandoverPage from './pages/HandoverPage';
-import GuidePage from './pages/GuidePage';
-import RulesPage from './pages/RulesPage';
 import AdminLogin from './pages/AdminLogin';
+import CustomerLanding from './pages/CustomerLanding';
+import GuidePage from './pages/GuidePage';
+import HandoverPage from './pages/HandoverPage';
+import RulesPage from './pages/RulesPage';
 
-/** Backward-compat redirect: /#/handover/:code → /#/h/:code */
 function HandoverRedirect() {
   const { code } = useParams<{ code: string }>();
   return <Navigate to={`/h/${code ?? ''}`} replace />;
@@ -19,7 +18,7 @@ function AdminGuard({ modules }: { modules: ReturnType<typeof useModules>['modul
   const { session, loading } = useAuth();
 
   if (loading) {
-    return <div className="boot-screen">Loading…</div>;
+    return <div className="boot-screen">Loading...</div>;
   }
 
   if (!session) {
@@ -52,10 +51,7 @@ export default function App() {
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/rules" element={<RulesPage />} />
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route
-        path="/admin/*"
-        element={<AdminGuard modules={modules} />}
-      />
+      <Route path="/admin/*" element={<AdminGuard modules={modules} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

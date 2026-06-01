@@ -32,7 +32,7 @@ export function PortalPreviewPage() {
               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>WeChat & Mobile First Design</h3>
             </div>
             <p className="muted" style={{ fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>
-              Customers access the portal using their mobile phone. It features large touch targets, quick copy shortcuts for verification codes/credentials, and clear warnings to prevent common login confusion.
+              Customers access the portal using their mobile phone. It features large touch targets, Wallet-first handover instructions, and clear warnings that account login is an exception.
             </p>
           </Card>
 
@@ -42,7 +42,7 @@ export function PortalPreviewPage() {
               <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Dynamic Data Integration</h3>
             </div>
             <p className="muted" style={{ fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>
-              When a customer enters their D-Ticket order code (e.g. <code style={{ background: 'rgba(0,0,0,0.05)', padding: '2px 4px', borderRadius: '4px' }}>DT-XXXX</code>), this portal queries the database to show their specific mailbox details, ticket month, and status in real-time.
+              When a customer opens their handover code, the current route calls Supabase RPC to show Wallet delivery instructions, ticket month, status, and only the account fields allowed by the delivery mode.
             </p>
           </Card>
 
@@ -56,12 +56,12 @@ export function PortalPreviewPage() {
                 In production, these services map to separate domains for clean customer/operator partitioning:
               </p>
               <ul style={{ margin: '4px 0 10px', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                <li><strong>portal.buffjo.top</strong> ➜ Customer Service Desk</li>
-                <li><strong>ops.buffjo.top</strong> ➜ Admin Operations Desk</li>
-                <li><strong>webmail.buffjo.top</strong> ➜ Customer Webmail Login</li>
+                <li><strong>portal.buffjo.top</strong> ➜ Customer portal and admin routes</li>
+                <li><strong>tickets.buffjo.top</strong> ➜ Routed/controlled TicketPlus+ login email domain</li>
+                <li><strong>webmail.buffjo.top</strong> ➜ Optional future hosted mailbox only</li>
               </ul>
               
-              <a href="/customer/portal" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+              <a href="/#/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
                 <Button className="button" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', minHeight: '38px', fontSize: '0.8rem' }}>
                   在新标签页打开独立客户端 <ExternalLink size={14} />
                 </Button>
