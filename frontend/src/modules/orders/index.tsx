@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties, type FormEvent } from 'react';
 import {
   ArrowRight,
+  AlertTriangle,
   Check,
   ClipboardList,
   Copy,
@@ -22,11 +23,16 @@ import {
   STATUS_LABELS,
   buildHandoverText,
   calculatePricing,
+  generateDetailedDeliveryPack,
+  generateShortDeliveryPack,
+  generateTroubleshootPack,
   getTicketMonth,
+  logDeliveryPackCopy,
   type MailboxAccount,
   type Order,
   type OrderStatus,
 } from './orderUtils';
+import { looksLikeWalletLink } from '../../lib/handover';
 
 const selectStyle = {
   width: '100%',
@@ -67,6 +73,19 @@ export default function OrdersPage() {
   const [serviceFee, setServiceFee] = useState(10.0);
   const [selectedMailboxId, setSelectedMailboxId] = useState('');
 
+  const [appleWalletLink, setAppleWalletLink] = useState('');
+  const [googleWalletLink, setGoogleWalletLink] = useState('');
+  const [checklist, setChecklist] = useState<Record<string, boolean>>({
+    passenger_name_confirmed: false,
+    ticket_month_confirmed: false,
+    wallet_links_present: false,
+    no_custom_pkpass: false,
+    no_qr_only: false,
+    risk_reviewed: false,
+    handover_code_generated: false,
+    delivery_pack_sent: false,
+  });
+
   const pricing = calculatePricing(startDate, serviceFee);
   const selectedMailbox = mailboxes.find((mailbox) => mailbox.id === selectedMailboxId);
 
@@ -104,6 +123,13 @@ export default function OrdersPage() {
     void loadOrders();
     void loadMailboxes();
   }, [loadOrders, loadMailboxes]);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setAppleWalletLink(selectedOrder.apple_wallet_link ?? '');
+      setGoogleWalletLink(selectedOrder.google_wallet_link ?? '');
+    }
+  }, [selectedOrder]);
 
   async function refreshSelectedOrder(orderId: string) {
     const { data } = await supabase
@@ -239,6 +265,45 @@ export default function OrdersPage() {
     setCopyState((prev) => ({ ...prev, [key]: true }));
     setTimeout(() => setCopyState((prev) => ({ ...prev, [key]: false })), 1800);
   }
+
+  async function handleSaveWalletLinks() {
+    if (!selectedOrder) return;
+    setBtnLoading(true);
+    setErrorMsg('');
+
+    const { error } = await supabase
+      .from('orders')
+      .update({
+        apple_wallet_link: appleWalletLink.trim() || null,
+        google_wallet_link: googleWalletLink.trim() || null,
+      })
+      .eq('id', selectedOrder.id);
+
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      await loadOrders();
+      await refreshSelectedOrder(selectedOrder.id);
+    }
+
+    setBtnLoading(false);
+  }
+
+  const copyButtonStyle: CSSProperties = {
+    background: 'rgba(16,25,47,0.06)',
+    border: 'none',
+    padding: '6px 10px',
+    borderRadius: 8,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontSize: '0.78rem',
+    fontWeight: 600,
+  };
+
+  const appleLinkValid = !appleWalletLink || looksLikeWalletLink(appleWalletLink, 'apple');
+  const googleLinkValid = !googleWalletLink || looksLikeWalletLink(googleWalletLink, 'google');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -511,6 +576,47 @@ export default function OrdersPage() {
                 </div>
               )}
 
+              {/* --- Wallet Links --- */}
+              <div style={{ marginBottom: '16px' }}>
+                <h4 style={{ margin: '0 0 10px' }}>Wallet Links</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div>
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '4px' }}>Apple Wallet Link</label>
+                    <Input
+                      value={appleWalletLink}
+                      onChange={(e) => setAppleWalletLink(e.target.value)}
+                      placeholder="https://wallet.apple.com/..."
+                    />
+                    {!appleLinkValid && (
+                      <p style={{ color: 'var(--warn)', fontSize: '0.75rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <AlertTriangle size={12} /> This URL does not look like an Apple Wallet link.
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="eyebrow" style={{ display: 'block', marginBottom: '4px' }}>Google Wallet Link</label>
+                    <Input
+                      value={googleWalletLink}
+                      onChange={(e) => setGoogleWalletLink(e.target.value)}
+                      placeholder="https://pay.google.com/..."
+                    />
+                    {!googleLinkValid && (
+                      <p style={{ color: 'var(--warn)', fontSize: '0.75rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <AlertTriangle size={12} /> This URL does not look like a Google Wallet link.
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    className="button-secondary"
+                    disabled={btnLoading}
+                    onClick={handleSaveWalletLinks}
+                    style={{ alignSelf: 'flex-start', minHeight: '36px', padding: '0 12px' }}
+                  >
+                    Save Wallet Links
+                  </Button>
+                </div>
+              </div>
+
               <div style={{ marginBottom: '16px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                   <h4 style={{ margin: 0 }}>Handover Codes</h4>
@@ -561,6 +667,106 @@ export default function OrdersPage() {
                     No handover code yet. Generate one after the official Wallet links are ready.
                   </div>
                 ) : null}
+              </div>
+
+              {/* --- Wallet Delivery Pack --- */}
+              <div style={{ marginBottom: '16px' }}>
+                <h4 style={{ margin: '0 0 10px' }}>Wallet Delivery Pack</h4>
+
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '14px' }}>
+                  <button
+                    onClick={() => {
+                      const text = generateShortDeliveryPack(selectedOrder);
+                      triggerCopy(text, 'pack-short');
+                      void logDeliveryPackCopy('short', selectedOrder.id, selectedOrder.handover_codes?.[0]?.code ?? null);
+                    }}
+                    style={copyButtonStyle}
+                  >
+                    {copyState['pack-short'] ? <Check size={12} style={{ color: 'var(--good)' }} /> : <Copy size={12} />}
+                    {copyState['pack-short'] ? '已复制' : '复制极简文案'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const text = generateDetailedDeliveryPack(selectedOrder);
+                      triggerCopy(text, 'pack-detailed');
+                      void logDeliveryPackCopy('detailed', selectedOrder.id, selectedOrder.handover_codes?.[0]?.code ?? null);
+                    }}
+                    style={copyButtonStyle}
+                  >
+                    {copyState['pack-detailed'] ? <Check size={12} style={{ color: 'var(--good)' }} /> : <Copy size={12} />}
+                    {copyState['pack-detailed'] ? '已复制' : '复制详细文案'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const text = generateTroubleshootPack(selectedOrder);
+                      triggerCopy(text, 'pack-troubleshoot');
+                      void logDeliveryPackCopy('troubleshoot', selectedOrder.id, selectedOrder.handover_codes?.[0]?.code ?? null);
+                    }}
+                    style={copyButtonStyle}
+                  >
+                    {copyState['pack-troubleshoot'] ? <Check size={12} style={{ color: 'var(--good)' }} /> : <Copy size={12} />}
+                    {copyState['pack-troubleshoot'] ? '已复制' : '复制售后文案'}
+                  </button>
+                </div>
+
+                <details style={{ marginBottom: '12px' }}>
+                  <summary style={{ cursor: 'pointer', fontSize: '0.82rem', color: 'var(--muted)' }}>Preview templates</summary>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                    {[
+                      { label: '极简交付文案', text: generateShortDeliveryPack(selectedOrder) },
+                      { label: '详细交付文案', text: generateDetailedDeliveryPack(selectedOrder) },
+                      { label: '售后排障文案', text: generateTroubleshootPack(selectedOrder) },
+                    ].map(({ label, text }) => (
+                      <div key={label}>
+                        <p className="eyebrow" style={{ margin: '0 0 4px' }}>{label}</p>
+                        <textarea
+                          readOnly
+                          value={text}
+                          style={{
+                            width: '100%',
+                            height: '140px',
+                            padding: '10px',
+                            border: '1px solid rgba(16,25,47,0.08)',
+                            borderRadius: 10,
+                            fontFamily: 'monospace',
+                            fontSize: '0.75rem',
+                            lineHeight: '1.4',
+                            resize: 'vertical',
+                            background: 'white',
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </details>
+
+                <div style={{ background: '#f4efe6', padding: '14px', borderRadius: 12, border: '1px solid rgba(0,0,0,0.06)' }}>
+                  <span className="eyebrow">Pre-delivery Checklist</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px', fontSize: '0.85rem' }}>
+                    {[
+                      { key: 'passenger_name_confirmed', label: '乘车人姓名已确认' },
+                      { key: 'ticket_month_confirmed', label: '车票月份已确认' },
+                      { key: 'wallet_links_present', label: 'Wallet 链接来自官方邮件/App/网页' },
+                      { key: 'no_custom_pkpass', label: '没有发送自制 pkpass' },
+                      { key: 'no_qr_only', label: '没有只发二维码截图' },
+                      { key: 'risk_reviewed', label: '已记录付款/订阅风险' },
+                      { key: 'handover_code_generated', label: '已生成交付码' },
+                      { key: 'delivery_pack_sent', label: '已发送客户交付包' },
+                    ].map(({ key, label }) => (
+                      <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={checklist[key]}
+                          onChange={(e) => setChecklist((prev) => ({ ...prev, [key]: e.target.checked }))}
+                          style={{ width: 18, height: 18, accentColor: 'var(--accent)' }}
+                        />
+                        <span style={{ textDecoration: checklist[key] ? 'line-through' : 'none', color: checklist[key] ? 'var(--muted)' : 'inherit' }}>
+                          {label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               <div style={{ borderTop: '1px solid var(--line)', paddingTop: '16px' }}>

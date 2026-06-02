@@ -59,6 +59,35 @@ export function getWalletLinkLabel(url: string, index: number): string {
   return `打开 Wallet 链接 ${index + 1}`;
 }
 
+export function looksLikeWalletLink(url: string, type: 'apple' | 'google'): boolean {
+  const lower = url.toLowerCase();
+  if (type === 'apple') {
+    return lower.includes('apple.com') || lower.includes('wallet.apple');
+  }
+  return lower.includes('pay.google.com') || lower.includes('google.com/wallet') || lower.includes('google.com/pay');
+}
+
+export function classifyWalletLinks(
+  links: string[],
+): { apple: string[]; google: string[]; other: string[] } {
+  const apple: string[] = [];
+  const google: string[] = [];
+  const other: string[] = [];
+
+  for (const link of links) {
+    const lower = link.toLowerCase();
+    if (lower.includes('apple.com') || lower.includes('wallet.apple')) {
+      apple.push(link);
+    } else if (lower.includes('pay.google.com') || lower.includes('google.com/wallet') || lower.includes('google.com/pay')) {
+      google.push(link);
+    } else {
+      other.push(link);
+    }
+  }
+
+  return { apple, google, other };
+}
+
 export async function getHandoverByCode(code: string): Promise<HandoverData | null> {
   const { data, error } = await supabase.rpc('get_handover_by_code', {
     p_code: code,

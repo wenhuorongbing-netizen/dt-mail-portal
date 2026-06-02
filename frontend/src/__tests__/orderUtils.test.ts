@@ -44,6 +44,8 @@ function order(mailboxAccount: MailboxAccount): Order {
     mailbox_account_id: mailboxAccount.id,
     created_at: '2026-06-01T00:00:00Z',
     updated_at: '2026-06-01T00:00:00Z',
+    apple_wallet_link: null,
+    google_wallet_link: null,
     mailbox_account: mailboxAccount,
     handover_codes: [],
   };

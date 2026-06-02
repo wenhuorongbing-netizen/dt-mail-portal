@@ -1,3 +1,5 @@
+import { supabase } from '../../lib/supabase';
+
 export const TICKET_PRICE_PER_MONTH = 63.0;
 
 export type OrderStatus =
@@ -54,6 +56,8 @@ export interface Order {
   mailbox_account_id: string | null;
   created_at: string;
   updated_at: string;
+  apple_wallet_link: string | null;
+  google_wallet_link: string | null;
   mailbox_account?: MailboxAccount;
   handover_codes?: HandoverCode[];
 }
@@ -117,6 +121,126 @@ export function isCustomerLoginMode(mode: DeliveryMode): boolean {
 
 export function customerCanLogin(mailbox: MailboxAccount): boolean {
   return isCustomerLoginMode(mailbox.delivery_mode) && Boolean(mailbox.customer_can_login && mailbox.password_enc);
+}
+
+function resolveWalletLink(link: string | null | undefined, fallback: string): string {
+  return link?.trim() || fallback;
+}
+
+function buildShortPack(order: Order): string {
+  const lines: string[] = ['您的 D-Ticket 已准备好。', ''];
+
+  if (order.passenger_name) {
+    lines.push(`乘车人：${order.passenger_name}`);
+  }
+  if (order.ticket_month) {
+    lines.push(`车票月份：${order.ticket_month}`);
+  }
+  if (lines[lines.length - 1] !== '') lines.push('');
+
+  lines.push('请点击以下官方链接添加到 Wallet：');
+  lines.push(`Apple Wallet: ${resolveWalletLink(order.apple_wallet_link, '链接待补充')}`);
+  lines.push(`Google Wallet: ${resolveWalletLink(order.google_wallet_link, '链接待补充')}`);
+  lines.push('');
+  lines.push('添加后，乘车前打开 Wallet 中的二维码。');
+  lines.push('验票时请同时出示本人证件。');
+  lines.push('本服务为独立购票协助服务，非官方售票方。');
+
+  return lines.join('\n');
+}
+
+function buildDetailedPack(order: Order): string {
+  const handoverCode = order.handover_codes?.[0]?.code;
+
+  const lines: string[] = [
+    '【D-Ticket Wallet 交付信息】',
+    '',
+    `乘车人：${order.passenger_name || '待确认'}`,
+    `车票月份：${order.ticket_month || '待确认'}`,
+    `交付码：${handoverCode || '未生成'}`,
+    '',
+    '1. 请点击官方 Wallet 链接：',
+    `   Apple Wallet：${resolveWalletLink(order.apple_wallet_link, '链接待补充')}`,
+    `   Google Wallet：${resolveWalletLink(order.google_wallet_link, '链接待补充')}`,
+    '',
+    '2. 如果在微信里打不开：',
+    '   请复制链接到 Safari / Chrome 打开。',
+    '',
+    '3. 添加成功后：',
+    '   乘车前打开 Apple Wallet / Google Wallet 中的二维码。',
+    '   验票时请携带本人护照/身份证件。',
+    '',
+    '4. 注意：',
+    '   不要只保存截图。',
+    '   不要打印 PDF。',
+    '   请确认姓名和证件一致。',
+    '',
+    '本服务为独立购票协助服务，与 TicketPlus+、Deutsche Bahn、BVG、Deutschlandticket 无关联。',
+  ];
+
+  return lines.join('\n');
+}
+
+function buildTroubleshootPack(order: Order): string {
+  const handoverCode = order.handover_codes?.[0]?.code;
+
+  const lines: string[] = [
+    'D-Ticket Wallet 常见问题',
+    '',
+    '如果 Wallet 链接打不开：',
+    '1. 复制链接到 Safari/Chrome 打开（不要在微信内直接打开）。',
+    '2. 换一个网络后重试（如切换 Wi-Fi / 移动数据）。',
+    '3. 确认手机系统支持 Apple Wallet 或 Google Wallet。',
+    '4. 如仍无法解决，请截图发给客服。',
+    '',
+    `交付码：${handoverCode || '请联系客服获取'}`,
+    `乘车人：${order.passenger_name || '请联系客服确认'}`,
+    `车票月份：${order.ticket_month || '请联系客服确认'}`,
+    '',
+    `Apple Wallet: ${resolveWalletLink(order.apple_wallet_link, '请联系客服补发')}`,
+    `Google Wallet: ${resolveWalletLink(order.google_wallet_link, '请联系客服补发')}`,
+    '',
+    '本服务为独立购票协助服务，与 TicketPlus+、Deutsche Bahn、BVG、Deutschlandticket 无关联。',
+  ];
+
+  return lines.join('\n');
+}
+
+export function generateShortDeliveryPack(order: Order): string {
+  return buildShortPack(order);
+}
+
+export function generateDetailedDeliveryPack(order: Order): string {
+  return buildDetailedPack(order);
+}
+
+export function generateTroubleshootPack(order: Order): string {
+  return buildTroubleshootPack(order);
+}
+
+export async function logDeliveryPackCopy(
+  templateType: 'short' | 'detailed' | 'troubleshoot',
+  orderId: string,
+  handoverCode: string | null,
+): Promise<void> {
+  try {
+    const { data: userData } = await supabase.auth.getUser();
+    const operatorId = userData.user?.id;
+    if (!operatorId) return;
+
+    await supabase.from('audit_events').insert({
+      operator_id: operatorId,
+      action: 'delivery_pack.copied',
+      target_table: 'orders',
+      target_id: orderId,
+      details: {
+        template_type: templateType,
+        handover_code: handoverCode,
+      },
+    });
+  } catch {
+    // Silent fail — audit is best-effort
+  }
 }
 
 export function buildHandoverText(
