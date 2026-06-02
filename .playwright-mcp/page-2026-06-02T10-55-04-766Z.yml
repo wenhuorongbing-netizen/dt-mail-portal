@@ -1,0 +1,64 @@
+- generic [ref=e4]:
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - link "腾讯云" [ref=e9] [cursor=pointer]:
+        - /url: https://cloud.tencent.com/
+        - generic [ref=e10]: 腾讯云
+      - generic [ref=e11]: 登录
+    - generic [ref=e15] [cursor=pointer]: 中国站
+  - generic [ref=e20]:
+    - link "注册" [ref=e22] [cursor=pointer]:
+      - /url: https://cloud.tencent.com/register?s_url=https%3A%2F%2Fconsole.cloud.tencent.com%2Fcns
+    - generic [ref=e24]:
+      - generic [ref=e26]:
+        - tablist [ref=e28]:
+          - listitem [ref=e29]:
+            - tab "微信登录" [selected] [ref=e30] [cursor=pointer]:
+              - generic [ref=e32]: 微信登录
+          - listitem [ref=e33]:
+            - tab "邮箱登录" [ref=e34] [cursor=pointer]:
+              - generic [ref=e36]: 邮箱登录
+        - tabpanel [ref=e38]:
+          - generic [ref=e45]:
+            - button "微信" [ref=e46] [cursor=pointer]: 微信
+            - button "企业微信" [ref=e48] [cursor=pointer]: 企业微信
+      - generic [ref=e50]:
+        - generic [ref=e51]: 其他登录方式
+        - generic [ref=e52]:
+          - button "QQ" [ref=e53] [cursor=pointer]:
+            - img [ref=e55]
+            - generic [ref=e58]: QQ
+          - button "小程序公众号" [ref=e59] [cursor=pointer]:
+            - img [ref=e61]
+            - generic [ref=e64]: 小程序公众号
+          - button "子用户" [ref=e65] [cursor=pointer]:
+            - img [ref=e67]
+            - generic [ref=e70]: 子用户
+          - button "通行密钥" [ref=e71] [cursor=pointer]:
+            - img [ref=e73]
+            - generic [ref=e76]: 通行密钥
+    - generic [ref=e80]:
+      - generic [ref=e81] [cursor=pointer]: 忘记账号
+      - generic [ref=e83] [cursor=pointer]: 忘记密码
+      - generic [ref=e85] [cursor=pointer]: 登录异常帮助文档
+  - generic [ref=e86]:
+    - generic [ref=e87]:
+      - link "腾讯开放平台" [ref=e89] [cursor=pointer]:
+        - /url: http://open.qq.com/
+      - link "腾讯会议" [ref=e90] [cursor=pointer]:
+        - /url: https://meeting.tencent.com/
+      - link "微信公众平台" [ref=e91] [cursor=pointer]:
+        - /url: http://mp.weixin.qq.com/
+      - link "腾讯优图" [ref=e92] [cursor=pointer]:
+        - /url: http://open.youtu.qq.com/
+      - link "腾讯企点" [ref=e93] [cursor=pointer]:
+        - /url: https://qidian.qq.com/?&utm_source=relatedlinks&utm_medium=tencentcloud&utm_term=footer
+      - link "腾讯微云" [ref=e94] [cursor=pointer]:
+        - /url: http://www.weiyun.com/
+      - link "腾讯文档" [ref=e95] [cursor=pointer]:
+        - /url: https://docs.qq.com/index.html?adtag=tencentcloud
+      - link "腾讯电子签" [ref=e96] [cursor=pointer]:
+        - /url: https://qian.tencent.com/?channel=promotion_free_txCloudLinks2brandOfficialSite
+      - link "友情链接" [ref=e97] [cursor=pointer]:
+        - /url: https://cloud.tencent.com/friendlink
+    - generic [ref=e99]: Copyright © 2013 - 2026 Tencent Cloud. All Rights Reserved. 腾讯云 版权所有 Tencent 腾讯旗下云平台，相关服务主体：深圳市腾讯计算机系统有限公司 | 腾讯云计算（北京）有限责任公司

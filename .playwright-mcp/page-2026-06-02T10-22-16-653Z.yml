@@ -1,0 +1,65 @@
+- generic [ref=e114]:
+  - link "返回首页" [ref=e115] [cursor=pointer]:
+    - /url: "#/"
+    - img [ref=e116]
+    - text: 返回首页
+  - banner [ref=e118]:
+    - paragraph [ref=e119]: 规则说明
+    - heading "规则与费用" [level=1] [ref=e120]
+    - paragraph [ref=e121]: Deutschlandticket 订阅和交付的重要规则。
+  - generic [ref=e122]:
+    - generic [ref=e123]:
+      - img [ref=e124]
+      - heading "10 号取消规则" [level=3] [ref=e127]
+    - generic [ref=e128]:
+      - paragraph [ref=e129]: Deutschlandticket 通常是按月自动续费的订阅票。取消下一月订阅有严格截止时间。
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - strong [ref=e132]: 1 到 10 号下单：
+          - paragraph [ref=e133]: 通常只需处理当前月车票。如需取消下月，请务必在当月 10 号前联系处理。
+        - generic [ref=e134]:
+          - strong [ref=e135]: 10 号之后下单：
+          - paragraph [ref=e136]: 系统通常已锁定下月订阅，需要支付当前月和下月两个月费用。
+  - generic [ref=e137]:
+    - generic [ref=e138]:
+      - img [ref=e139]
+      - heading "费用计算器" [level=3] [ref=e141]
+    - generic [ref=e142]:
+      - generic [ref=e143]:
+        - generic [ref=e144]: 下单日期
+        - textbox [ref=e145]: 2026-06-02
+      - generic [ref=e146]:
+        - generic [ref=e147]: 服务费 (EUR)
+        - spinbutton [ref=e148]: "10"
+    - generic [ref=e149]:
+      - generic [ref=e150]:
+        - generic [ref=e151]: 下单日：
+        - generic [ref=e152]: 每月 2 号
+      - generic [ref=e153]:
+        - generic [ref=e154]: 订阅时长：
+        - generic [ref=e155]: 1 个月 (当前月)
+      - generic [ref=e156]:
+        - generic [ref=e157]: 车票费用 (63 EUR/月)
+        - generic [ref=e158]: 63.00 EUR
+      - generic [ref=e159]:
+        - generic [ref=e160]: 服务费
+        - generic [ref=e161]: 10.00 EUR
+      - generic [ref=e162]:
+        - generic [ref=e163]: 预计总费用
+        - generic [ref=e164]: 73.00 EUR
+  - generic [ref=e165]:
+    - heading "实名制规则" [level=3] [ref=e166]
+    - list [ref=e167]:
+      - listitem [ref=e168]: Deutschlandticket 是实名制、不可转让的个人票。
+      - listitem [ref=e169]: 票面姓名必须与乘客证件一致。
+      - listitem [ref=e170]: 验票员可能要求出示护照或带照片的身份证件。
+      - listitem [ref=e171]: 将车票借给他人使用违反使用条款。
+  - generic [ref=e172]:
+    - heading "退款与交付" [level=3] [ref=e173]
+    - paragraph [ref=e174]: 车票一旦出票或生成 Wallet/二维码，通常视为最终确认。已出票车票是否可退取决于票源方政策和订阅状态。
+  - generic [ref=e175]:
+    - img [ref=e176]
+    - generic [ref=e179]:
+      - strong [ref=e180]: 独立服务声明：
+      - text: 本服务不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 官方服务。我们仅提供购票协助和交付说明。
+  - contentinfo [ref=e181]: D-Ticket 交付中心 · 独立协助服务

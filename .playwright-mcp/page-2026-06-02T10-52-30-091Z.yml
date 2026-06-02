@@ -1,0 +1,94 @@
+- generic [ref=e4]:
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - link "腾讯云" [ref=e9] [cursor=pointer]:
+        - /url: https://cloud.tencent.com/
+        - generic [ref=e10]: 腾讯云
+      - generic [ref=e11]: 登录
+    - generic [ref=e15] [cursor=pointer]: 中国站
+  - generic [ref=e17]:
+    - generic [ref=e19]:
+      - generic [ref=e24]:
+        - text: 【重要】为了增强您的账户与资产安全保障，自2025年6月30日起，将分批为所有用户
+        - strong [ref=e25]: 自动禁用超过90天未使用的 AccessKey，
+        - text: 详情见
+        - link "公告" [ref=e26] [cursor=pointer]:
+          - /url: https://cloud.tencent.com/announce/detail/2047
+          - generic [ref=e27]: 公告
+      - button [ref=e29] [cursor=pointer]:
+        - img [ref=e31]
+    - generic [ref=e33]:
+      - generic [ref=e35]:
+        - link "注册" [ref=e37] [cursor=pointer]:
+          - /url: https://cloud.tencent.com/register?s_url=https%3A%2F%2Fconsole.cloud.tencent.com%2Fcns
+        - generic [ref=e39]:
+          - generic [ref=e41]:
+            - tablist [ref=e43]:
+              - listitem [ref=e44]:
+                - tab "微信登录" [selected] [ref=e45] [cursor=pointer]:
+                  - generic [ref=e47]: 微信登录
+              - listitem [ref=e48]:
+                - tab "邮箱登录" [ref=e49] [cursor=pointer]:
+                  - generic [ref=e51]: 邮箱登录
+            - tabpanel [ref=e53]:
+              - generic [ref=e54]:
+                - generic [ref=e57]:
+                  - paragraph [ref=e62]: 您的浏览器还未开启本地网络访问权限，可能会影响微信快捷登录，开启指引
+                  - button [ref=e64] [cursor=pointer]:
+                    - img [ref=e66]
+                - generic [ref=e68]:
+                  - iframe [ref=e73]:
+                    - img [ref=f7e9]
+                  - generic [ref=e77]:
+                    - button "微信" [ref=e78] [cursor=pointer]: 微信
+                    - button "企业微信" [ref=e80] [cursor=pointer]: 企业微信
+          - generic [ref=e82]:
+            - generic [ref=e83]: 其他登录方式
+            - generic [ref=e84]:
+              - button "QQ" [ref=e85] [cursor=pointer]:
+                - img [ref=e87]
+                - generic [ref=e90]: QQ
+              - button "小程序公众号" [ref=e91] [cursor=pointer]:
+                - img [ref=e93]
+                - generic [ref=e96]: 小程序公众号
+              - button "子用户" [ref=e97] [cursor=pointer]:
+                - img [ref=e99]
+                - generic [ref=e102]: 子用户
+              - button "通行密钥" [ref=e103] [cursor=pointer]:
+                - img [ref=e105]
+                - generic [ref=e108]: 通行密钥
+        - generic [ref=e112]:
+          - generic [ref=e113] [cursor=pointer]: 忘记账号
+          - generic [ref=e115] [cursor=pointer]: 忘记密码
+          - generic [ref=e117] [cursor=pointer]: 登录异常帮助文档
+      - link "腾讯云大模型 Token Plan 龙虾和 AI 编码专属订阅套餐 集合混元 2.0、GLM-5、MiniMax-M2.5 等主流模型 兼容 OpenClaw、CodeBuddy、Claude Code 等 同等用量省超一半，超高性价比 立即体验" [ref=e121] [cursor=pointer]:
+        - /url: https://cloud.tencent.com/act/pro/tokenplan?ad_trace=e163a9807bf44cbc937500a80bce6505&from=29772&from_column=29772#buy
+        - heading "腾讯云大模型 Token Plan 龙虾和 AI 编码专属订阅套餐" [level=3] [ref=e122]:
+          - text: 腾讯云大模型 Token Plan
+          - text: 龙虾和 AI 编码专属订阅套餐
+        - generic [ref=e123]:
+          - generic [ref=e124]: 集合混元 2.0、GLM-5、MiniMax-M2.5 等主流模型
+          - generic [ref=e125]: 兼容 OpenClaw、CodeBuddy、Claude Code 等
+          - generic [ref=e126]: 同等用量省超一半，超高性价比
+        - button "立即体验" [ref=e128]
+  - generic [ref=e129]:
+    - generic [ref=e130]:
+      - link "腾讯开放平台" [ref=e132] [cursor=pointer]:
+        - /url: http://open.qq.com/
+      - link "腾讯会议" [ref=e133] [cursor=pointer]:
+        - /url: https://meeting.tencent.com/
+      - link "微信公众平台" [ref=e134] [cursor=pointer]:
+        - /url: http://mp.weixin.qq.com/
+      - link "腾讯优图" [ref=e135] [cursor=pointer]:
+        - /url: http://open.youtu.qq.com/
+      - link "腾讯企点" [ref=e136] [cursor=pointer]:
+        - /url: https://qidian.qq.com/?&utm_source=relatedlinks&utm_medium=tencentcloud&utm_term=footer
+      - link "腾讯微云" [ref=e137] [cursor=pointer]:
+        - /url: http://www.weiyun.com/
+      - link "腾讯文档" [ref=e138] [cursor=pointer]:
+        - /url: https://docs.qq.com/index.html?adtag=tencentcloud
+      - link "腾讯电子签" [ref=e139] [cursor=pointer]:
+        - /url: https://qian.tencent.com/?channel=promotion_free_txCloudLinks2brandOfficialSite
+      - link "友情链接" [ref=e140] [cursor=pointer]:
+        - /url: https://cloud.tencent.com/friendlink
+    - generic [ref=e142]: Copyright © 2013 - 2026 Tencent Cloud. All Rights Reserved. 腾讯云 版权所有 Tencent 腾讯旗下云平台，相关服务主体：深圳市腾讯计算机系统有限公司 | 腾讯云计算（北京）有限责任公司

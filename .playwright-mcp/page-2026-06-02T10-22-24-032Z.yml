@@ -1,0 +1,23 @@
+- generic [ref=e183]:
+  - generic [ref=e184]:
+    - generic [ref=e185]: DT
+    - heading "操作员入口" [level=2] [ref=e186]
+    - paragraph [ref=e187]: 输入短账号即可，系统会自动补内部域名。客户不能在这里注册或登录。
+  - generic [ref=e188]:
+    - generic [ref=e189]:
+      - generic [ref=e190]: Operator Login
+      - generic [ref=e191]:
+        - img [ref=e192]
+        - textbox "abc" [ref=e195]
+    - generic [ref=e196]:
+      - generic [ref=e197]: Password
+      - generic [ref=e198]:
+        - img [ref=e199]
+        - textbox "至少 6 位密码" [ref=e202]
+    - paragraph [ref=e203]:
+      - text: 例如账号填
+      - code [ref=e204]: abc
+      - text: 即可，不需要输入 @ 和后面的域名。密码默认至少 6 位。
+    - button "进入操作台" [ref=e205] [cursor=pointer]:
+      - text: 进入操作台
+      - img [ref=e206]

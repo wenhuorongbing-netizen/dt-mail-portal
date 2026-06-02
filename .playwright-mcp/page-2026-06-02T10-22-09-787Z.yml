@@ -1,0 +1,68 @@
+- generic [ref=e50]:
+  - link "返回首页" [ref=e51] [cursor=pointer]:
+    - /url: "#/"
+    - img [ref=e52]
+    - text: 返回首页
+  - banner [ref=e54]:
+    - paragraph [ref=e55]: Wallet Guide
+    - heading "Apple Wallet / Google Wallet 使用指南" [level=1] [ref=e56]
+    - paragraph [ref=e57]: 默认交付方式是官方 Wallet 添加链接。您不需要 TicketPlus+ 账号登录、邮箱密码或 OTP 验证码。
+  - generic [ref=e58]:
+    - generic [ref=e59]:
+      - img [ref=e60]
+      - heading "添加步骤" [level=3] [ref=e63]
+    - list [ref=e64]:
+      - listitem [ref=e65]:
+        - strong [ref=e66]: 打开官方添加链接：
+        - text: 使用客服发送的 Apple Wallet 或 Google Wallet 链接。不要使用非官方自制 pass 或二维码截图作为最终交付。
+      - listitem [ref=e67]:
+        - strong [ref=e68]: 微信打不开时换浏览器：
+        - text: 如果在微信内点击无反应，请复制链接到 Safari、Chrome 或手机默认浏览器打开。
+      - listitem [ref=e69]:
+        - strong [ref=e70]: 确认实名信息：
+        - text: 添加前检查车票姓名、月份和二维码页面是否正常显示。
+      - listitem [ref=e71]:
+        - strong [ref=e72]: 保存到手机 Wallet：
+        - text: iPhone 选择添加到 Apple Wallet；Android 按页面提示添加到 Google Wallet 或系统钱包。
+      - listitem [ref=e73]:
+        - strong [ref=e74]: 乘车前检查：
+        - text: 出发前打开 Wallet，确认二维码能显示，手机有电并可离线打开。
+      - listitem [ref=e75]:
+        - strong [ref=e76]: 验票时出示证件：
+        - text: Deutschlandticket 是实名票，查票时可能要求出示护照或身份证件。
+  - generic [ref=e77]:
+    - generic [ref=e78]:
+      - img [ref=e79]
+      - heading "重要说明" [level=3] [ref=e81]
+    - list [ref=e82]:
+      - listitem [ref=e83]: 默认情况下，客户不接收 TicketPlus+ 登录邮箱、邮箱密码或验证码。
+      - listitem [ref=e84]: 不要修改 TicketPlus+ 账号、邮箱、密码、订阅或支付方式。
+      - listitem [ref=e85]: 未来月份车票通常在当月 1 日凌晨约 03:00 后才会激活显示。
+      - listitem [ref=e86]: 每个邮箱或账号通常只能绑定一张有效 Deutschlandticket。
+      - listitem [ref=e87]: 如果 Wallet 链接过期、无法打开或显示信息不对，请联系客服补发或核对。
+  - generic [ref=e88]:
+    - img [ref=e89]
+    - generic [ref=e92]:
+      - strong [ref=e93]: 账号登录例外：
+      - text: 只有在确认没有运营方支付方式、订阅续费或账号接管风险后，客服才会提供 TicketPlus+ 登录或邮箱登录支持。
+  - generic [ref=e94]:
+    - generic [ref=e95]:
+      - img [ref=e96]
+      - strong [ref=e98]: 常见问题
+    - list [ref=e99]:
+      - listitem [ref=e100]:
+        - strong [ref=e101]: 链接打不开：
+        - text: 复制到系统浏览器，关闭无痕模式或换网络后重试。
+      - listitem [ref=e102]:
+        - strong [ref=e103]: 看不到车票：
+        - text: 确认是否已到票面月份，未来月份车票可能尚未激活。
+      - listitem [ref=e104]:
+        - strong [ref=e105]: 手机换机：
+        - text: 联系客服联系票源方重新发送官方 Wallet 添加链接。
+      - listitem [ref=e106]:
+        - strong [ref=e107]: 验票失败：
+        - text: 立即联系客服，并保留票面月份、姓名和错误提示截图用于排查。
+  - generic [ref=e108]:
+    - img [ref=e109]
+    - generic [ref=e112]: 本服务不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 官方服务。我们仅提供购票协助和交付说明。
+  - contentinfo [ref=e113]: D-Ticket 交付中心 · 独立协助服务

@@ -1,0 +1,38 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]: DT
+    - heading "D-Ticket 交付中心" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Deutschlandticket 购票协助与 Wallet 交付说明
+  - generic [ref=e8]:
+    - img [ref=e9]
+    - generic [ref=e12]:
+      - strong [ref=e13]: 独立服务声明：
+      - text: 本项目不是 TicketPlus+、Deutsche Bahn、BVG 或 Deutschlandticket 官方服务。我们仅提供购票协助和交付说明。
+  - generic [ref=e14]:
+    - generic [ref=e15]:
+      - img [ref=e16]
+      - heading "打开我的交付页" [level=3] [ref=e19]
+    - paragraph [ref=e20]: 输入交付码查看 Wallet 添加说明、乘车前检查和客服备注。
+    - generic [ref=e21]:
+      - textbox "输入交付码，如 a3b8k2m5" [ref=e22]
+      - button "查看" [disabled] [ref=e23]:
+        - img [ref=e24]
+        - text: 查看
+  - navigation [ref=e27]:
+    - link "Wallet 添加指南 Apple Wallet / Google Wallet 添加步骤和常见问题" [ref=e28] [cursor=pointer]:
+      - /url: "#/guide"
+      - generic [ref=e29]:
+        - img [ref=e31]
+        - generic [ref=e33]:
+          - heading "Wallet 添加指南" [level=3] [ref=e34]
+          - paragraph [ref=e35]: Apple Wallet / Google Wallet 添加步骤和常见问题
+        - img [ref=e36]
+    - link "规则与费用说明 10 号规则、计费方式、退订政策" [ref=e38] [cursor=pointer]:
+      - /url: "#/rules"
+      - generic [ref=e39]:
+        - img [ref=e41]
+        - generic [ref=e44]:
+          - heading "规则与费用说明" [level=3] [ref=e45]
+          - paragraph [ref=e46]: 10 号规则、计费方式、退订政策
+        - img [ref=e47]
+  - contentinfo [ref=e49]: 独立购票协助服务 · 与任何官方交通运营商无关联
